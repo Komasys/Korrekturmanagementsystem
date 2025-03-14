@@ -5,16 +5,6 @@ from flask.testing import FlaskClient
 from models.models import db, Benutzer, Rolle
 from app import app as flask_app
 
-def test_app() -> Generator[Flask, None, None]:  # Name geändert auf test_app
-    flask_app.config['TESTING'] = True
-    flask_app.config['WTF_CSRF_ENABLED'] = False  # CSRF für Tests deaktivieren
-
-    with flask_app.app_context():
-        db.create_all()
-        yield flask_app  # Fixture gibt app zurück
-        db.session.remove()
-        db.drop_all()
-
 @pytest.fixture
 def client(app: Flask) -> FlaskClient:
     return app.test_client()
