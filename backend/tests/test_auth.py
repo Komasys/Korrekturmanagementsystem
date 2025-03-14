@@ -1,18 +1,17 @@
+from typing import Generator
 import pytest
 from flask import Flask
 from flask.testing import FlaskClient
 from models.models import db, Benutzer, Rolle
 from app import app as flask_app
-import os
 
-def app():
+def test_app() -> Generator[Flask, None, None]:  # Name geändert auf test_app
     flask_app.config['TESTING'] = True
-    flask_app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'postgresql://testuser:testpassword@localhost:5432/testdb')
     flask_app.config['WTF_CSRF_ENABLED'] = False  # CSRF für Tests deaktivieren
 
     with flask_app.app_context():
         db.create_all()
-        yield flask_app
+        yield flask_app  # Fixture gibt app zurück
         db.session.remove()
         db.drop_all()
 
