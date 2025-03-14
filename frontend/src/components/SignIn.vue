@@ -1,0 +1,87 @@
+<template>
+  <div class="container">
+    <form @submit.prevent="signin" id="signinForm">
+      <h1>Anmelden</h1>
+      <input type="email" v-model="email" placeholder="Email" id="email" />
+      <input type="password" v-model="password" placeholder="Password" id="password" />
+      <button type="submit">Login</button>
+      <p>Noch kein Konto?</p>
+      <a href="/signup">Hier registrieren</a>
+    </form>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const email = ref('')
+const password = ref('')
+const message = ref('')
+const router = useRouter()
+
+const signin = async () => {
+  const response = await fetch('http://localhost:5000/auth/signin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value,
+    }),
+  })
+
+  const result = await response.json()
+  if (response.ok) {
+    localStorage.setItem('access_token', result.access_token)
+    router.push({ name: 'dashboard' })
+  } else {
+    message.value = result.message || 'Fehler bei der Anmeldung'
+  }
+}
+</script>
+
+<style scoped>
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+h1 {
+  font-size: 2em;
+}
+
+p,
+a {
+  font-size: 14px;
+  margin: 0px;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input,
+button {
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 5px 10px;
+  width: 40vw;
+  max-width: 400px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+button:hover {
+  border: 1px solid rgb(66, 66, 66);
+}
+</style>

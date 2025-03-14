@@ -1,0 +1,19 @@
+[MASTER]
+ignore=venv,__pycache__,.env
+ignore-paths=venv,__pycache__,.env
+
+[MESSAGES CONTROL]
+disable=C0114,C0115,C0116
+
+[REPORTS]
+output-format=colorized
+
+[FORMAT]
+max-line-length=100
+
+[DESIGN]
+max-args=5
+max-locals=15
+max-returns=6
+max-branches=12
+max-statements=50
