@@ -23,7 +23,7 @@ def signup():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'message': 'Benutzer erfolgreiche registriert!'}), 201
+    return jsonify({'message': 'Benutzer erfolgreich registriert!'}), 201
 
 @auth_bp.route('/signin', methods=['POST'])
 def login():
