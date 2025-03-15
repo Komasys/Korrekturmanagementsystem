@@ -1,0 +1,40 @@
+name: Deploy to Hetzner
+
+on:
+    push:
+        branches:
+            - main # Falls dein Hauptbranch anders heißt, anpassen (z. B. "master" oder "develop")
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Repository auschecken
+              uses: actions/checkout@v3
+
+            - name: Verbindung zum Server & Deployment
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.HETZNER_HOST }}
+                  username: ${{ secrets.HETZNER_USER }}
+                  key: ${{ secrets.HETZNER_SSH_KEY }}
+                  script: |
+                      echo "🔄 Starte Deployment..."
+                      cd /root/korrekturmanagement  # Falls dein Pfad anders ist, anpassen
+                      git pull origin main
+                      echo "✅ Code aktualisiert!"
+
+                      # Backend aktualisieren
+                      cd backend
+                      source venv/bin/activate
+                      pip install -r requirements.txt
+                      systemctl restart korrektur-backend
+                      echo "🚀 Flask-Backend neu gestartet!"
+
+                      # Frontend aktualisieren
+                      cd ../frontend
+                      npm install
+                      npm run build
+                      systemctl restart nginx
+                      echo "🎨 Vue-Frontend neu gebaut & Nginx neu gestartet!"
