@@ -24,7 +24,7 @@ Stellen Sie sicher, dass die folgenden Softwarekomponenten auf Ihrem System inst
 1. **Repository klonen:**
 
     ```sh
-    git clone <repository-url>
+    git clone https://github.com/Komasys/Korrekturmanagementsystem
     cd Korrekturmanagementsystem/backend
     ```
 
