@@ -4,6 +4,7 @@ import HomeView from '@/views/HomeView.vue'
 import SignUp from '@/components/SignUp.vue'
 import SignIn from '@/components/SignIn.vue'
 import DashboardView from '@/views/DashboardView.vue'
+import API_URL from '@/api'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,7 +52,7 @@ router.beforeEach(async (to, from, next) => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/auth/user-info', {
+      const response = await fetch(`${API_URL}/auth/user-info`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

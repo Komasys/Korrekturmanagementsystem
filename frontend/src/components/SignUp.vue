@@ -10,6 +10,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import API_URL from '@/api'
 
 const name = ref('')
 const email = ref('')
@@ -17,7 +18,7 @@ const password = ref('')
 const message = ref('')
 
 const signup = async () => {
-  const response = await fetch('http://localhost:5000/auth/signup', {
+  const response = await fetch(`${API_URL}/auth/signup`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
