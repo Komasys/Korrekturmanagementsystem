@@ -21,7 +21,7 @@ jobs:
                   key: ${{ secrets.HETZNER_SSH_KEY }}
                   script: |
                       echo "🔄 Starte Deployment..."
-                      cd /root/korrekturmanagement
+                      cd root/korrekturmanagement/
                       git pull origin main
                       echo "✅ Code aktualisiert!"
 
