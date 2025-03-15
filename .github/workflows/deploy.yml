@@ -1,12 +1,56 @@
-name: Deploy to Hetzner
+name: Test & Deploy to Hetzner
 
 on:
     push:
         branches:
-            - main # Falls dein Hauptbranch anders heißt, anpassen (z. B. "master" oder "develop")
+            - main
 
 jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Repository auschecken
+              uses: actions/checkout@v3
+
+            # Backend-Tests
+            - name: Installiere Python & Abhängigkeiten
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.12"
+
+            - name: Installiere Backend-Abhängigkeiten
+              run: |
+                  cd backend
+                  python -m venv venv
+                  source venv/bin/activate
+                  pip install --upgrade pip
+                  pip install -r requirements.txt
+
+            - name: Führe Backend-Tests aus
+              run: |
+                  cd backend
+                  source venv/bin/activate
+                  pytest --maxfail=1 --disable-warnings || exit 1
+
+            # Frontend-Tests
+            - name: Installiere Node.js & Abhängigkeiten
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
+
+            - name: Installiere Frontend-Abhängigkeiten
+              run: |
+                  cd frontend
+                  npm install
+
+            - name: Baue das Frontend (Test)
+              run: |
+                  cd frontend
+                  npm run build
+
     deploy:
+        needs: test
         runs-on: ubuntu-latest
 
         steps:
@@ -21,15 +65,20 @@ jobs:
                   key: ${{ secrets.HETZNER_SSH_KEY }}
                   script: |
                       echo "🔄 Starte Deployment..."
-                      cd root/korrekturmanagement/
+                      cd /root/korrekturmanagement/
                       git pull origin main
                       echo "✅ Code aktualisiert!"
 
                       # Backend aktualisieren
                       cd backend
+                      if [ ! -d "venv" ]; then
+                          echo "🛠 Erstelle virtuelles Python-Environment..."
+                          python3 -m venv venv
+                      fi
                       source venv/bin/activate
+                      pip install --upgrade pip
                       pip install -r requirements.txt
-                      systemctl restart korrektur-backend
+                      systemctl restart korrektur-backend || (pkill gunicorn && nohup gunicorn --workers 3 --bind 0.0.0.0:5000 app:app &)
                       echo "🚀 Flask-Backend neu gestartet!"
 
                       # Frontend aktualisieren
