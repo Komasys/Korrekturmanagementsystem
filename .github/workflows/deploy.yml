@@ -103,6 +103,7 @@ jobs:
                       # Frontend aktualisieren
                       cd ../frontend
                       npm install
+                      rm -rf dist .vite
                       npm run build
                       systemctl restart nginx
                       echo "🎨 Vue-Frontend neu gebaut & Nginx neu gestartet!"
