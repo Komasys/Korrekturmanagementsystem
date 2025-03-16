@@ -1,4 +1,7 @@
 <template>
+  <nav>
+    <RouterLink to="/">Zurück</RouterLink>
+  </nav>
   <form @submit.prevent="signup" id="signupForm">
     <input type="text" v-model="name" placeholder="Name" id="name" />
     <input type="email" v-model="email" placeholder="E-Mail" id="email" />

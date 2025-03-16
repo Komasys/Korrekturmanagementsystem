@@ -1,19 +1,17 @@
 <template>
-  <div class="container">
-    <button @click="signOut">Logout</button>
-  </div>
+  <button @click="signOut">Logout</button>
 </template>
 
 <script>
 export default {
   methods: {
     signOut() {
-      console.log('User signed out');
-      localStorage.removeItem('access_token');
-      this.$router.push('/');
-    }
-  }
-};
+      console.log('User signed out')
+      localStorage.removeItem('access_token')
+      this.$router.push('/')
+    },
+  },
+}
 </script>
 
 <style scoped>

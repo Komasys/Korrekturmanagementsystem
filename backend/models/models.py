@@ -7,16 +7,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
-class KategorieHaupt(Enum):
-    FEHLER = "fehler"
-    VERBESSERUNGSVORSCHLAG = "verbesserungsvorschlag"
-
-class KategorieUnter(Enum):
+class Kategorie(Enum):
     TIPPFEHLER = "tippfehler"
     INHALTLICHER_FEHLER = "inhaltlicher_fehler"
     FORMATIERUNGSFEHLER = "formatierungsfehler"
     ERWEITERUNG = "erweiterung"
-    STRUKTURVERBESSERUNG = "sturkturverbesserung"
+    STRUKTURVERBESSERUNG = "strukturverbesserung"
 
 class Prioritaet(Enum):
     NIEDRIG = "niedrig"
@@ -62,8 +58,7 @@ class Ticket(db.Model):
     __tablename__ = 'ticket'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     beschreibung = db.Column(db.Text, nullable=False)
-    kategorie_haupt = db.Column(db.Enum(KategorieHaupt), nullable=False)
-    kategorie_unter = db.Column(db.Enum(KategorieUnter))
+    kategorie = db.Column(db.Enum(Kategorie), nullable=False)
     erstelldatum = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     prioritaet = db.Column(db.Enum(Prioritaet))
     kurs_id = db.Column(UUID(as_uuid=True), db.ForeignKey('kurs.id'), nullable=False)
