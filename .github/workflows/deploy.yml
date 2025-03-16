@@ -103,7 +103,8 @@ jobs:
                       # Frontend aktualisieren
                       cd ../frontend
                       npm install
-                      rm -rf dist .vite
+                      rm -rf /var/www/korrektur-frontend/dist .vite
                       npm run build
+                      cp -r dist /var/www/korrektur-frontend/
                       systemctl restart nginx
                       echo "🎨 Vue-Frontend neu gebaut & Nginx neu gestartet!"
