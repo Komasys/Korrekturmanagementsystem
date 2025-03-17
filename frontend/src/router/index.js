@@ -4,7 +4,10 @@ import SignUp from '@/components/SignUp.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import API_URL from '@/api'
 import LoginView from '@/views/LoginView.vue'
+import TicketDetails from '@/components/TicketDetails.vue'
 import TicketCreate from '@/components/TicketCreate.vue'
+import MyTickets from '@/components/MyTickets.vue'
+import AllTickets from '@/components/AllTickets.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,12 +35,29 @@ const router = createRouter({
       name: 'dashboard',
       component: DashboardView,
       meta: { requiresAuth: true },
-    },
-    {
-      path: '/ticket-erstellen',
-      name: 'TicketCreate',
-      component: TicketCreate,
-      meta: { requiresAuth: true },
+      children: [
+        {
+          path: 'create-ticket',
+          name: 'create-ticket',
+          component: TicketCreate,
+        },
+        {
+          path: 'my-tickets',
+          name: 'my-tickets',
+          component: MyTickets,
+        },
+        {
+          path: 'all-tickets',
+          name: 'all-tickets',
+          component: AllTickets,
+        },
+        {
+          path: 'ticket/:id',
+          name: 'ticket-details',
+          component: TicketDetails,
+          props: (route) => ({ ticketId: route.params.id }),
+        },
+      ],
     },
   ],
 })

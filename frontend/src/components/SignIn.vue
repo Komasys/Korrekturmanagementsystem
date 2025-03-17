@@ -7,6 +7,10 @@
       <button type="submit">Login</button>
       <p>Noch kein Konto?</p>
       <a href="/signup">Hier registrieren</a>
+      <br />
+      <p style="color: darkred; font-weight: 600">
+        Registrierung wird es später natürlich nicht geben. Testzweck only
+      </p>
     </form>
   </div>
 </template>

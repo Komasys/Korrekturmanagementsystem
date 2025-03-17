@@ -15,16 +15,14 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  display: flex;
-  justify-content: end;
-  padding-top: 20px;
-}
-
 button {
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid rgb(205, 205, 205);
-  border-radius: 10px;
+  background-color: rgb(140, 0, 0);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 </style>

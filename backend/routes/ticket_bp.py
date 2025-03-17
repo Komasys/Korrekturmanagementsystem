@@ -19,6 +19,20 @@ def set_ticket():
 
     return jsonify({'message': 'Ticket erfolgreich eingereicht!'}), 201
 
+@ticket_bp.route('/getTicket/<string:ticket_id>', methods=['GET'])
+def get_ticket(ticket_id):
+    ticket = Ticket.query.get(ticket_id)
+    if not ticket:
+        return jsonify({"message": "Ticket nicht gefunden!"}), 404
+
+    return jsonify(ticket.serialize()), 200
+
+@ticket_bp.route('/getAllTickets', methods=['GET'])
+def get_all_tickets():
+    tickets = Ticket.query.all()
+    tickets = [ticket.serialize() for ticket in tickets]
+    return jsonify(tickets), 200
+
 @ticket_bp.route('/getTicketsByUser/<string:benutzer_id>', methods=['GET'])
 def get_tickets_by_user(benutzer_id):
     tickets = Ticket.query.filter_by(ersteller_id=benutzer_id).all()

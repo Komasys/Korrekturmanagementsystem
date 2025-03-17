@@ -1,6 +1,10 @@
 <template>
   <div class="form-container">
     <h2>Ticket erstellen</h2>
+    <p style="color: darkred; font-weight: 600">
+      Wird noch erweitert u.a - Lernmaterial-Typ , Datei-upload
+    </p>
+
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="kategorie">Kategorie:</label>
