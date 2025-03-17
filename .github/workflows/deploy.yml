@@ -28,7 +28,6 @@ jobs:
             - name: Repository auschecken
               uses: actions/checkout@v3
 
-            # Backend-Tests
             - name: Installiere Python & Abhängigkeiten
               uses: actions/setup-python@v4
               with:
@@ -52,7 +51,6 @@ jobs:
                   source venv/bin/activate
                   pytest --maxfail=1 --disable-warnings || exit 1
 
-            # Frontend-Tests
             - name: Installiere Node.js & Abhängigkeiten
               uses: actions/setup-node@v3
               with:
@@ -83,10 +81,10 @@ jobs:
                   username: ${{ secrets.HETZNER_USER }}
                   key: ${{ secrets.HETZNER_SSH_KEY }}
                   script: |
-                      echo "🔄 Starte Deployment..."
+                      echo "Starte Deployment..."
                       cd /root/korrekturmanagement/
                       git pull origin main
-                      echo "✅ Code aktualisiert!"
+                      echo "Code aktualisiert!"
 
                       # Backend aktualisieren
                       cd backend
@@ -97,8 +95,14 @@ jobs:
                       source venv/bin/activate
                       pip install --upgrade pip
                       pip install -r requirements.txt
+
+                      # Datenbank migrieren mit Flask-Migrate
+                      echo "Starte Datenbankmigration..."
+                      flask db upgrade
+                      echo "Datenbankmigration abgeschlossen!"
+
                       systemctl restart korrektur-backend || (pkill gunicorn && nohup gunicorn --workers 3 --bind 0.0.0.0:5000 app:app &)
-                      echo "🚀 Flask-Backend neu gestartet!"
+                      echo "Flask-Backend neu gestartet!"
 
                       # Frontend aktualisieren
                       cd ../frontend
@@ -107,4 +111,4 @@ jobs:
                       npm run build
                       cp -r dist /var/www/korrektur-frontend/
                       systemctl restart nginx
-                      echo "🎨 Vue-Frontend neu gebaut & Nginx neu gestartet!"
+                      echo "Vue-Frontend neu gebaut & Nginx neu gestartet!"
