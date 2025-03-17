@@ -11,6 +11,11 @@
       <p style="color: darkred; font-weight: 600">
         Registrierung wird es später natürlich nicht geben. Testzweck only
       </p>
+      <p style="max-width: 400px">
+        Es gibt im System noch keine GUI-Fehlermeldung, Infos zu Fehlern finden sich in der
+        Entwicklungsconsole (F12 (Chrome, Firefox, Edge) oder Strg+Shift+I (Windows) bzw.
+        Cmd+Option+I (Mac))
+      </p>
     </form>
   </div>
 </template>
@@ -41,6 +46,7 @@ const signin = async () => {
     router.push({ name: 'dashboard' })
   } else {
     message.value = result.message || 'Fehler bei der Anmeldung'
+    alert(message.value)
   }
 }
 </script>
@@ -80,7 +86,7 @@ button {
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 5px 10px;
-  width: 40vw;
+  width: 100%;
   max-width: 400px;
   box-sizing: border-box;
   font-size: 16px;
