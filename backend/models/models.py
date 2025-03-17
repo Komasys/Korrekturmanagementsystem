@@ -54,6 +54,15 @@ class Benutzer(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def serialize(self):
+        return {
+            'id': str(self.id),
+            'name': self.name,
+            'email': self.email,
+            'rolle': self.rolle.value,
+            'letzte_anmeldung': self.letzte_anmeldung.isoformat()
+        }
+
 class Ticket(db.Model):
     __tablename__ = 'ticket'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -64,6 +73,17 @@ class Ticket(db.Model):
     kurs_id = db.Column(UUID(as_uuid=True), db.ForeignKey('kurs.id'), nullable=False)
     ersteller_id = db.Column(UUID(as_uuid=True), db.ForeignKey('benutzer.id'), nullable=False)
 
+    def serialize(self):
+        return {
+            'id': str(self.id),
+            'beschreibung': self.beschreibung,
+            'kategorie': self.kategorie.value,
+            'erstelldatum': self.erstelldatum.isoformat(),
+            'prioritaet': self.prioritaet.value if self.prioritaet else None,
+            'kurs_id': str(self.kurs_id),
+            'ersteller_id': str(self.ersteller_id)
+        }
+
 class Lernmaterial(db.Model):
     __tablename__ = 'lernmaterial'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -72,6 +92,16 @@ class Lernmaterial(db.Model):
     kurs_id = db.Column(UUID(as_uuid=True), db.ForeignKey('kurs.id'), nullable=False)
     erstelldatum = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     letzter_aktualisierung = db.Column(db.DateTime, nullable=True)
+
+    def serialize(self):
+        return {
+            'id': str(self.id),
+            'titel': self.titel,
+            'typ': self.typ.value,
+            'kurs_id': str(self.kurs_id),
+            'erstelldatum': self.erstelldatum.isoformat(),
+            'letzter_aktualisierung': self.letzter_aktualisierung.isoformat() if self.letzter_aktualisierung else None
+        }
 
 class Historie(db.Model):
     __tablename__ = 'historie'
@@ -83,6 +113,17 @@ class Historie(db.Model):
     status = db.Column(db.Enum(TicketStatus), nullable=False)
     pruefer_id = db.Column(UUID(as_uuid=True), db.ForeignKey('benutzer.id'), nullable=True)
 
+    def serialize(self):
+        return {
+            'id': str(self.id),
+            'ticket_id': str(self.ticket_id),
+            'bearbeiter_id': str(self.bearbeiter_id),
+            'beschreibung': self.beschreibung,
+            'geaendert_am': self.geaendert_am.isoformat(),
+            'status': self.status.value,
+            'pruefer_id': str(self.pruefer_id) if self.pruefer_id else None
+        }
+
 class Kommentar(db.Model):
     __tablename__ = 'kommentar'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -91,6 +132,15 @@ class Kommentar(db.Model):
     nachricht = db.Column(db.Text, nullable=False)
     erstelldatum = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
+    def serialize(self):
+        return {
+            'id': str(self.id),
+            'benutzer_id': str(self.benutzer_id),
+            'ticket_id': str(self.ticket_id),
+            'nachricht': self.nachricht,
+            'erstelldatum': self.erstelldatum.isoformat()
+        }
+
 class Kurs(db.Model):
     __tablename__ = 'kurs'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -98,8 +148,23 @@ class Kurs(db.Model):
     kuerzel = db.Column(db.String(50), unique=True, nullable=False)
     kursleitung_id = db.Column(UUID(as_uuid=True), db.ForeignKey('benutzer.id'), nullable=True)
 
+    def serialize(self):
+        return {
+            'id': str(self.id),
+            'name': self.name,
+            'kuerzel': self.kuerzel,
+            'kursleitung_id': str(self.kursleitung_id) if self.kursleitung_id else None
+        }
+
 class Anhang(db.Model):
     __tablename__ = 'anhang'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     ticket_id = db.Column(UUID(as_uuid=True), db.ForeignKey('ticket.id'), nullable=False)
     dateiname = db.Column(db.String(255), nullable=False)
+
+    def serialize(self):
+        return {
+            'id': str(self.id),
+            'ticket_id': str(self.ticket_id),
+            'dateiname': self.dateiname
+        }

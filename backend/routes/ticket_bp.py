@@ -19,6 +19,12 @@ def set_ticket():
 
     return jsonify({'message': 'Ticket erfolgreich eingereicht!'}), 201
 
+@ticket_bp.route('/getTicketsByUser/<string:benutzer_id>', methods=['GET'])
+def get_tickets_by_user(benutzer_id):
+    tickets = Ticket.query.filter_by(ersteller_id=benutzer_id).all()
+    tickets = [ticket.serialize() for ticket in tickets]
+    return jsonify(tickets), 200
+
 @ticket_bp.route('/getTicketKategorien', methods=['GET'])
 def get_ticket_kategorien():
     def format_enum(enum_value):
