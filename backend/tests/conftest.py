@@ -15,6 +15,7 @@ from models import db
 def client():
     app.config['TESTING'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    app.config['JWT_SECRET_KEY'] = 'test_secret_key'
     with app.test_client() as client:
         with app.app_context():
             db.create_all()
