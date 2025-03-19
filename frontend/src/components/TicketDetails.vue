@@ -10,8 +10,11 @@
     <p><strong>Kategorie:</strong> {{ ticket.kategorie }}</p>
     <p><strong>Kurs ID:</strong> {{ ticket.kurs_id }}</p>
     <p><strong>Ersteller ID:</strong> {{ ticket.ersteller_id }}</p>
+    <p><strong>Erstellungsdatum:</strong> {{ new Date(ticket.erstelldatum).toLocaleString() }}</p>
     <!-- Weitere Ticket-Details hier -->
   </div>
+  <h2>Diskussion</h2>
+  <div></div>
 </template>
 
 <script setup>

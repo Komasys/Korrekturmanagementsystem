@@ -18,10 +18,20 @@
 
       <div class="form-group">
         <label for="kurs_id">Kurs:</label>
-        <select id="kurs_id" v-model="kurs_id" required>
+        <select id="kurs_id" v-model="kurs_id" @change="loadLernmaterial" required>
           <option value="" disabled>Bitte Kurs wählen</option>
           <option v-for="kurs in kurse" :key="kurs.id" :value="kurs.id">
             {{ kurs.kuerzel }} - {{ kurs.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="lernmaterial">Lernmaterial:</label>
+        <select id="lernmaterial" v-model="lernmaterial">
+          <option value="" disabled>Bitte Lernmaterial wählen</option>
+          <option v-for="lm in lernmaterialien" :key="lm.id" :value="lm.id">
+            {{ lm.typ }}- {{ lm.titel }}
           </option>
         </select>
       </div>
@@ -45,6 +55,8 @@ import API_URL from '@/api'
 const kategorie = ref('')
 const kategorien = ref({})
 const kurs_id = ref('')
+const lernmaterial = ref('')
+const lernmaterialien = ref([])
 const beschreibung = ref('')
 const message = ref('')
 const kurse = ref([])
@@ -63,6 +75,13 @@ const loadKurse = async () => {
   kurse.value = data
 }
 
+const loadLernmaterial = async () => {
+  if (!kurs_id.value) return
+  const response = await fetch(`${API_URL}/lernmaterial/getLernmaterial/${kurs_id.value}`)
+  const data = await response.json()
+  lernmaterialien.value = data
+}
+
 onMounted(() => {
   loadKategorien()
   loadKurse()
@@ -75,6 +94,7 @@ const submitForm = async () => {
     body: JSON.stringify({
       kategorie: kategorie.value,
       kurs_id: kurs_id.value,
+      lernmaterial_id: lernmaterial.value,
       beschreibung: beschreibung.value,
       benutzer_id: userStore.benutzer_id,
     }),

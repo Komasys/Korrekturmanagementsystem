@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models.models import Kurs
+from models import Kurs
+
 kurs_bp = Blueprint('kurs_bp', __name__)
 
 @kurs_bp.route('/getKurse', methods=['GET'])

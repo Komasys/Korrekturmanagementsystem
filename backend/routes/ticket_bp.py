@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models.models import db, Ticket, Kategorie
+from models import db, Ticket, Kategorie
 ticket_bp = Blueprint('ticket_bp', __name__)
 
 @ticket_bp.route('/setTicket', methods=['POST'])

@@ -1,8 +1,8 @@
 """Initial migration.
 
-Revision ID: 7992eeff1dcf
+Revision ID: a835ca3b4013
 Revises: 
-Create Date: 2025-03-14 12:25:48.565983
+Create Date: 2025-03-19 10:37:11.768509
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7992eeff1dcf'
+revision = 'a835ca3b4013'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -50,8 +50,7 @@ def upgrade():
     op.create_table('ticket',
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('beschreibung', sa.Text(), nullable=False),
-    sa.Column('kategorie_haupt', sa.Enum('FEHLER', 'VERBESSERUNGSVORSCHLAG', name='kategoriehaupt'), nullable=False),
-    sa.Column('kategorie_unter', sa.Enum('TIPPFEHLER', 'INHALTLICHER_FEHLER', 'FORMATIERUNGSFEHLER', 'ERWEITERUNG', 'STRUKTURVERBESSERUNG', name='kategorieunter'), nullable=True),
+    sa.Column('kategorie', sa.Enum('TIPPFEHLER', 'INHALTLICHER_FEHLER', 'FORMATIERUNGSFEHLER', 'ERWEITERUNG', 'STRUKTURVERBESSERUNG', name='kategorie'), nullable=False),
     sa.Column('erstelldatum', sa.DateTime(), nullable=False),
     sa.Column('prioritaet', sa.Enum('NIEDRIG', 'MITTEL', 'HOCH', name='prioritaet'), nullable=True),
     sa.Column('kurs_id', sa.UUID(), nullable=False),

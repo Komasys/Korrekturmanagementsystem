@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models.models import db, Benutzer, Rolle
+from models import db, Benutzer, Rolle
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 auth_bp = Blueprint('auth_bp', __name__)
@@ -16,9 +16,10 @@ def signup():
     new_user = Benutzer(
         name=data['name'],
         email=data['email'],
+        password = data['password'],
         rolle=Rolle.STUDENT # Default role for new users is STUDENT (can be changed later by admin)
     )
-    new_user.set_password(data['password'])
+    #new_user.password = data['password']
 
     db.session.add(new_user)
     db.session.commit()

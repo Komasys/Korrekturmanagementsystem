@@ -1,18 +1,4 @@
-import pytest
-from app import app
-from models.models import db, Benutzer, Rolle
-
-@pytest.fixture
-def client():
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    app.config['JWT_SECRET_KEY'] = 'your_secret_key'  # Add this line
-    with app.test_client() as client:
-        with app.app_context():
-            db.create_all()
-            yield client
-            db.session.remove()
-            db.drop_all()
+from models import db, Benutzer, Rolle
 
 def test_signup(client):
     response = client.post('/auth/signup', json={
@@ -31,7 +17,7 @@ def test_signup(client):
 
 def test_signup_existing_user(client):
     user = Benutzer(name='Existing User', email='existing@example.com', rolle=Rolle.STUDENT)
-    user.set_password('password')
+    user.password = 'password'
     db.session.add(user)
     db.session.commit()
 
@@ -45,7 +31,7 @@ def test_signup_existing_user(client):
 
 def test_signin(client):
     user = Benutzer(name='Test User', email='test@example.com', rolle=Rolle.STUDENT)
-    user.set_password('password')
+    user.password = 'password'
     db.session.add(user)
     db.session.commit()
 
