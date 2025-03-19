@@ -82,10 +82,10 @@ jobs:
                   username: ${{ secrets.HETZNER_USER }}
                   key: ${{ secrets.HETZNER_SSH_KEY }}
                   script: |
-                      echo "Starte Deployment..."
+                      echo "🚀 Starte Deployment..."
                       cd /root/korrekturmanagement/
                       git pull origin main
-                      echo "Code aktualisiert!"
+                      echo "✅ Code aktualisiert!"
 
                       # Backend aktualisieren
                       cd backend
@@ -99,25 +99,31 @@ jobs:
 
                       # Prüfen, ob das Migrationsverzeichnis existiert
                       if [ ! -d "migrations" ]; then
-                          echo "Migrationsverzeichnis fehlt, initialisiere es..."
+                          echo "⚠️ Migrationsverzeichnis fehlt, initialisiere Alembic..."
                           flask db init
-                          flask db migrate -m "Initial migration"
                       fi
 
-                      # Prüfen, ob Migrationen fehlen
-                      if ! flask db show 2>&1 | grep -q "current"; then
-                          echo "Keine aktuelle Migration gefunden, setze Datenbank auf letzten Stand..."
+                      # Prüfen, ob die aktuelle Migration in der DB existiert
+                      echo "🔄 Prüfe Alembic-Status..."
+                      CURRENT_REV=$(flask db current 2>/dev/null | awk '{print $1}')
+                      if [ -z "$CURRENT_REV" ]; then
+                          echo "⚠️ Keine gültige Migration gefunden, setze Datenbank auf neuesten Stand..."
                           flask db stamp head
-                          flask db migrate -m "Recreate missing migrations"
                       fi
 
-                      # Datenbank migrieren
-                      echo "Starte Datenbankmigration..."
-                      flask db upgrade || (echo "Fehler bei Migration, versuche Neuaufbau..." && flask db stamp head && flask db migrate -m "Rebuild migrations" && flask db upgrade)
-                      echo "Datenbankmigration abgeschlossen!"
+                      # Versuche normale Migration
+                      echo "🔄 Starte Datenbankmigration..."
+                      if ! flask db upgrade; then
+                          echo "⚠️ Fehler bei Migration, versuche erzwungene Reparatur..."
+                          rm -rf migrations/versions/*.py
+                          flask db stamp head
+                          flask db migrate -m "Rebuild all migrations"
+                          flask db upgrade
+                      fi
+                      echo "✅ Datenbankmigration abgeschlossen!"
 
                       systemctl restart korrektur-backend || (pkill gunicorn && nohup gunicorn --workers 3 --bind 0.0.0.0:5000 app:app &)
-                      echo "Flask-Backend neu gestartet!"
+                      echo "✅ Flask-Backend neu gestartet!"
 
                       # Frontend aktualisieren
                       cd ../frontend
@@ -126,4 +132,4 @@ jobs:
                       npm run build
                       cp -r dist /var/www/korrektur-frontend/
                       systemctl restart nginx
-                      echo "Vue-Frontend neu gebaut & Nginx neu gestartet!"
+                      echo "✅ Vue-Frontend neu gebaut & Nginx neu gestartet!"
