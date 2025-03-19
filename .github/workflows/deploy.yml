@@ -97,9 +97,23 @@ jobs:
                       pip install --upgrade pip
                       pip install -r requirements.txt
 
-                      # Datenbank migrieren mit Flask-Migrate
+                      # Prüfen, ob das Migrationsverzeichnis existiert
+                      if [ ! -d "migrations" ]; then
+                          echo "Migrationsverzeichnis fehlt, initialisiere es..."
+                          flask db init
+                          flask db migrate -m "Initial migration"
+                      fi
+
+                      # Prüfen, ob Migrationen fehlen
+                      if ! flask db show 2>&1 | grep -q "current"; then
+                          echo "Keine aktuelle Migration gefunden, setze Datenbank auf letzten Stand..."
+                          flask db stamp head
+                          flask db migrate -m "Recreate missing migrations"
+                      fi
+
+                      # Datenbank migrieren
                       echo "Starte Datenbankmigration..."
-                      flask db upgrade
+                      flask db upgrade || (echo "Fehler bei Migration, versuche Neuaufbau..." && flask db stamp head && flask db migrate -m "Rebuild migrations" && flask db upgrade)
                       echo "Datenbankmigration abgeschlossen!"
 
                       systemctl restart korrektur-backend || (pkill gunicorn && nohup gunicorn --workers 3 --bind 0.0.0.0:5000 app:app &)

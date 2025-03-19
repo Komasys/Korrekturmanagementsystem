@@ -43,6 +43,5 @@ blueprints = [
 for bp, prefix in blueprints:
     app.register_blueprint(bp, url_prefix=prefix)
 
-
 if __name__ == "__main__":
     app.run(debug=True)
