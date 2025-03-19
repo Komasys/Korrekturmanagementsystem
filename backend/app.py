@@ -1,7 +1,8 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+import os
 
 # Eigene Module
 from config import Config
@@ -41,6 +42,13 @@ blueprints = [
 
 for bp, prefix in blueprints:
     app.register_blueprint(bp, url_prefix=prefix)
+
+# Middleware zur Überprüfung der erlaubten IP-Adresse
+@app.before_request
+def limit_remote_addr():
+    allowed_ip = os.getenv('ALLOWED_IP')
+    if request.remote_addr != allowed_ip:
+        return jsonify({"message": "Access denied"}), 403
 
 if __name__ == "__main__":
     app.run(debug=True)
