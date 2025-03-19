@@ -46,8 +46,9 @@ for bp, prefix in blueprints:
 # Middleware zur Überprüfung der erlaubten IP-Adresse
 @app.before_request
 def limit_remote_addr():
-    allowed_ip = os.getenv('ALLOWED_IP')
-    if request.remote_addr != allowed_ip:
+    allowed_ip = os.getenv("ALLOWED_IP", "127.0.0.1")
+    client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    if client_ip not in allowed_ip:
         return jsonify({"message": "Access denied"}), 403
 
 if __name__ == "__main__":
