@@ -15,8 +15,50 @@
     <button>{{ ticket.prioritaet }}</button>
     <p>---Anhang coming soon---</p>
   </div>
+
   <div class="card">
-    <h2>Kommentare</h2>
+    <h2>Interne Kommunikation</h2>
+    <div v-for="eintrag in ticket.historie" :key="eintrag.id" class="comment">
+      <p>
+        <strong>{{ eintrag.bearbeiter_name }}</strong> am
+        {{ new Date(eintrag.geaendert_am).toLocaleString() }}
+      </p>
+      <p>{{ eintrag.beschreibung }}</p>
+      <p>{{ eintrag.status }}</p>
+    </div>
+    <form @submit.prevent="submitEdit">
+      <div>
+        <p style="color: darkred">Status- und Prioänderungen müssen noch implementiert werden</p>
+        <label for="status">Status:</label>
+        <select v-model="ticket.new_status" id="status">
+          <option value="ABGELEHNT">Abgelehnt</option>
+          <option value="PRUEFUNG">Prüfung</option>
+          <option value="ANPASSUNG">Anpassung</option>
+          <option value="GESCHLOSSEN">Geschlossen</option>
+        </select>
+      </div>
+      <div>
+        <label for="prioritaet">Priorität:</label>
+        <select v-model="ticket.new_prioritaet" id="prioritaet">
+          <option value="NIEDRIG">Niedrig</option>
+          <option value="MITTEL">Mittel</option>
+          <option value="HOCH">Hoch</option>
+        </select>
+      </div>
+      <div>
+        <label for="beschreibung">Beschreibung:</label>
+        <textarea
+          v-model="historieBeschreibung"
+          id="beschreibung"
+          placeholder="Beschreibung hinzufügen"
+        ></textarea>
+      </div>
+      <button type="submit">Änderungen speichern</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Rückfragen an Ticketersteller</h2>
     <div v-for="kommentar in ticket.kommentare" :key="kommentar.id" class="comment">
       <p>
         <strong>{{ kommentar.benutzer_name }}</strong> am
@@ -42,6 +84,7 @@ const props = defineProps({
 
 const ticket = ref({})
 const newComment = ref('')
+const historieBeschreibung = ref('')
 const userStore = useUserStore()
 
 const loadTicketDetails = async () => {
@@ -74,6 +117,27 @@ const submitComment = async () => {
   }
 }
 
+const submitEdit = async () => {
+  const response = await fetch(`${API_URL}/ticket/updateTicket`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ticket_id: props.ticketId,
+      status: ticket.value.new_status,
+      prioritaet: ticket.value.new_prioritaet,
+      beschreibung: historieBeschreibung.value,
+      bearbeiter_id: userStore.benutzer_id,
+    }),
+  })
+
+  if (response.ok) {
+    historieBeschreibung.value = ''
+    loadTicketDetails()
+  } else {
+    console.error('Failed to update ticket')
+  }
+}
+
 watch(() => props.ticketId, loadTicketDetails, { immediate: true })
 </script>
 
@@ -84,7 +148,7 @@ watch(() => props.ticketId, loadTicketDetails, { immediate: true })
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 16px;
-  margin: 16px 0px 16px 0px;
+  margin: 16px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
@@ -127,6 +191,9 @@ textarea {
   margin-bottom: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 100px;
 }
 
 button {
@@ -140,5 +207,21 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  color: #333;
+  font-weight: bold;
 }
 </style>

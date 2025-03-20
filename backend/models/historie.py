@@ -8,7 +8,7 @@ class Historie(db.Model):
     __tablename__ = 'historie'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     ticket_id = db.Column(UUID(as_uuid=True), db.ForeignKey('ticket.id'), nullable=False)
-    bearbeiter_id = db.Column(UUID(as_uuid=True), db.ForeignKey('benutzer.id'), nullable=False)
+    bearbeiter_id = db.Column(UUID(as_uuid=True), db.ForeignKey('benutzer.id'), nullable=True)
     beschreibung = db.Column(db.Text, nullable=False)
     geaendert_am = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     status = db.Column(db.Enum(TicketStatus), nullable=False)
