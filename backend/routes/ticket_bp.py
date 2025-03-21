@@ -14,7 +14,7 @@ def set_ticket():
         kategorie = data['kategorie'],
         prioritaet = "NIEDRIG",
         kurs_id = data['kurs_id'],
-        ersteller_id = data['benutzer_id'],
+        ersteller_id = data['benutzer_id'], ##########
 
     )
     db.session.add(new_ticket)
@@ -23,7 +23,9 @@ def set_ticket():
     new_historie = Historie(
         ticket_id = new_ticket.id,
         status = "NEU",
-        beschreibung = "Ticket erstellt"
+        beschreibung = "*Ticket erstellt*",
+        bearbeiter_id = data['benutzer_id'],
+        geaendert_am = datetime.utcnow()
     )
     db.session.add(new_historie)
     db.session.commit()
@@ -120,9 +122,12 @@ def update_ticket():
         ticket_id=ticket_id,
         bearbeiter_id=bearbeiter_id,
         beschreibung=beschreibung,
-        status="NEU", # MUSS NOCH IMPLEMENTIERT WERDEN
+        status=status,
         geaendert_am=datetime.utcnow()
     )
+
+    ticket.prioritaet = prioritaet
+
     db.session.add(historie)
     db.session.commit()
 

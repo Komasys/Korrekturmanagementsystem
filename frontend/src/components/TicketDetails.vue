@@ -1,10 +1,6 @@
 <template>
   <div class="card">
     <h2>Ticket Details</h2>
-    <p style="color: darkred; font-weight: 600">
-      Hier folgen noch Historie, Kommentare, Bearbeitungsfunktion, Statusändernungen, Kurs-ID zeigt
-      dann nicht die Nummer sondern den Namen etc. pp
-    </p>
     <p><strong>ID:</strong> {{ ticket.id }}</p>
     <p><strong>Erstellt von:</strong> {{ ticket.ersteller_name }}</p>
     <p><strong>Erstellt am:</strong> {{ new Date(ticket.erstelldatum).toLocaleString() }}</p>
@@ -17,20 +13,25 @@
   </div>
 
   <div class="card">
-    <h2>Interne Kommunikation</h2>
+    <h2>Historie</h2>
     <div v-for="eintrag in ticket.historie" :key="eintrag.id" class="comment">
       <p>
         <strong>{{ eintrag.bearbeiter_name }}</strong> am
-        {{ new Date(eintrag.geaendert_am).toLocaleString() }}
+        {{ new Date(eintrag.geaendert_am).toLocaleString() }} | Status: {{ eintrag.status }}
       </p>
       <p>{{ eintrag.beschreibung }}</p>
-      <p>{{ eintrag.status }}</p>
     </div>
     <form @submit.prevent="submitEdit">
       <div>
-        <p style="color: darkred">Status- und Prioänderungen müssen noch implementiert werden</p>
+        <h2>Interne Kommunikation</h2>
+        <p style="color: darkred">
+          Statuslogik muss noch implementiert werden. (Z.b. wenn Abgelehnt dann nicht mehr
+          bearbeitbar etc.)<br />Wer welchen Status einstellen kann muss auch noch implementiert
+          werden.
+        </p>
+        <p style="color: darkred"></p>
         <label for="status">Status:</label>
-        <select v-model="ticket.new_status" id="status">
+        <select v-model="new_status" id="status">
           <option value="ABGELEHNT">Abgelehnt</option>
           <option value="PRUEFUNG">Prüfung</option>
           <option value="ANPASSUNG">Anpassung</option>
@@ -39,7 +40,7 @@
       </div>
       <div>
         <label for="prioritaet">Priorität:</label>
-        <select v-model="ticket.new_prioritaet" id="prioritaet">
+        <select v-model="new_prioritaet" id="prioritaet">
           <option value="NIEDRIG">Niedrig</option>
           <option value="MITTEL">Mittel</option>
           <option value="HOCH">Hoch</option>
@@ -84,6 +85,8 @@ const props = defineProps({
 
 const ticket = ref({})
 const newComment = ref('')
+const new_status = ref('')
+const new_prioritaet = ref('')
 const historieBeschreibung = ref('')
 const userStore = useUserStore()
 
@@ -123,8 +126,8 @@ const submitEdit = async () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       ticket_id: props.ticketId,
-      status: ticket.value.new_status,
-      prioritaet: ticket.value.new_prioritaet,
+      status: new_status.value,
+      prioritaet: new_prioritaet.value,
       beschreibung: historieBeschreibung.value,
       bearbeiter_id: userStore.benutzer_id,
     }),
