@@ -19,7 +19,7 @@
           <td>{{ ticket.id }}</td>
           <td>{{ ticket.beschreibung }}</td>
           <td>{{ ticket.kategorie }}</td>
-          <td style="color: darkgoldenrod">coming soon</td>
+          <td>{{ ticket.status }}</td>
         </tr>
       </tbody>
     </table>

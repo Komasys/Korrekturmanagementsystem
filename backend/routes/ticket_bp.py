@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import db, Ticket, Kategorie, Benutzer, Kurs, Historie, Kommentar
+from models import db, Ticket, Kategorie, Benutzer, Kurs, Historie, Kommentar, TicketStatus
 from datetime import datetime
 ticket_bp = Blueprint('ticket_bp', __name__)
 
@@ -66,12 +66,18 @@ def get_ticket(ticket_id):
 def get_all_tickets():
     tickets = Ticket.query.all()
     tickets = [ticket.serialize() for ticket in tickets]
+    for ticket in tickets:
+        ticket_status = Historie.query.filter_by(ticket_id=ticket['id']).order_by(Historie.geaendert_am.desc()).first()
+        ticket['status'] = ticket_status.status.value if ticket_status else 'Unbekannt'
     return jsonify(tickets), 200
 
 @ticket_bp.route('/getTicketsByUser/<string:benutzer_id>', methods=['GET'])
 def get_tickets_by_user(benutzer_id):
     tickets = Ticket.query.filter_by(ersteller_id=benutzer_id).all()
     tickets = [ticket.serialize() for ticket in tickets]
+    for ticket in tickets:
+        ticket_status = Historie.query.filter_by(ticket_id=ticket['id']).order_by(Historie.geaendert_am.desc()).first()
+        ticket['status'] = ticket_status.status.value if ticket_status else 'Unbekannt'
     return jsonify(tickets), 200
 
 @ticket_bp.route('/getTicketKategorien', methods=['GET'])
@@ -81,6 +87,14 @@ def get_ticket_kategorien():
 
     kategorie = {kategorie.name: format_enum(kategorie.name) for kategorie in Kategorie}
     return jsonify(kategorie), 200
+
+@ticket_bp.route('/getTicketStatus', methods=['GET'])
+def get_ticket_status():
+    def format_enum(enum_value):
+        return enum_value.replace("_", " ").title()
+
+    status = {status.name: format_enum(status.name) for status in TicketStatus}
+    return jsonify(status), 200
 
 @ticket_bp.route('/addComment', methods=['POST'])
 def add_comment():
