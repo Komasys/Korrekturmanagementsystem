@@ -5,17 +5,6 @@
       <input type="email" v-model="email" placeholder="Email" id="email" />
       <input type="password" v-model="password" placeholder="Password" id="password" />
       <button type="submit">Login</button>
-      <p>Noch kein Konto?</p>
-      <a href="/signup">Hier registrieren</a>
-      <br />
-      <p style="color: darkred; font-weight: 600">
-        Registrierung wird es später natürlich nicht geben. Testzweck only
-      </p>
-      <p style="max-width: 400px">
-        Es gibt im System noch keine GUI-Fehlermeldung, Infos zu Fehlern finden sich in der
-        Entwicklungsconsole (F12 (Chrome, Firefox, Edge) oder Strg+Shift+I (Windows) bzw.
-        Cmd+Option+I (Mac))
-      </p>
     </form>
   </div>
 </template>

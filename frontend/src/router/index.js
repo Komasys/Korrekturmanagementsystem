@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import SignUp from '@/components/SignUp.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import API_URL from '@/api'
 import LoginView from '@/views/LoginView.vue'
@@ -9,6 +8,7 @@ import TicketCreate from '@/components/TicketCreate.vue'
 import MyTickets from '@/components/MyTickets.vue'
 import AllTickets from '@/components/AllTickets.vue'
 import BearbeiteteTickets from '@/components/EditTickets.vue'
+import BenutzerHandbuch from '@/views/BenutzerHandbuch.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,17 +19,17 @@ const router = createRouter({
       component: LoginView,
     },
     {
-      path: '/signup',
-      name: 'signup',
-      component: SignUp,
-    },
-    {
       path: '/signout',
       name: 'signout',
       beforeEnter: (to, from, next) => {
         localStorage.removeItem('access_token')
         next({ name: 'login' })
       },
+    },
+    {
+      path: '/benutzerhandbuch',
+      name: 'benutzerhandbuch',
+      component: BenutzerHandbuch,
     },
     {
       path: '/dashboard',

@@ -16,7 +16,14 @@
     <RouterView />
   </main>
   <footer>
-    <p>Rolle: {{ userStore.benutzer_rolle }}</p>
+    <button
+      class="help"
+      onclick="window.open('/benutzerhandbuch', '_blank')"
+      title="Benutzerhandbuch"
+    >
+      ?
+    </button>
+    <p class="role">Rolle: {{ userStore.benutzer_rolle }}</p>
   </footer>
 </template>
 
@@ -59,12 +66,34 @@ p {
   font-size: 20px;
 }
 
-footer {
+.role {
   padding: 10px;
   background-color: #f0f0f0;
   text-align: center;
   position: fixed;
   bottom: 0;
   right: 0;
+}
+
+.help {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #48906a;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 10px;
+  margin: 10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(234, 234, 234);
+}
+
+.help:hover {
+  background-color: #3b6e4d;
 }
 </style>

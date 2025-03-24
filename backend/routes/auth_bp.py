@@ -4,28 +4,6 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 auth_bp = Blueprint('auth_bp', __name__)
 
-@auth_bp.route('/signup', methods=['POST'])
-def signup():
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "Ungültige JSON-Daten!"}), 400
-
-    if Benutzer.query.filter_by(email=data['email']).first():
-        return jsonify({"message": "Benutzer existiert bereits!"}), 400
-
-    new_user = Benutzer(
-        name=data['name'],
-        email=data['email'],
-        password = data['password'],
-        rolle=Rolle.STUDENT # Default role for new users is STUDENT (can be changed later by admin)
-    )
-    #new_user.password = data['password']
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify({'message': 'Benutzer erfolgreich registriert!'}), 201
-
 @auth_bp.route('/signin', methods=['POST'])
 def login():
     data = request.get_json()
