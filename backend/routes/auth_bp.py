@@ -56,6 +56,7 @@ def user_info():
             "id": user.id,
             "email": user.email,
             "name": user.name,
+            "rolle": user.rolle.value,
         }), 200
 
     return jsonify({"message": "Benutzer nicht gefunden"}), 400

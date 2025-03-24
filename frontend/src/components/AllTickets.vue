@@ -1,48 +1,33 @@
 <template>
-  <div>
+  <div v-if="!isStudent">
     <h1>Alle Tickets</h1>
-    <p style="color: darkred; font-weight: 600">
-      Zurzeit kann hier jeder alle Tickets sehen, später werden nur gewisse Rollen Zugriff haben.
-    </p>
-    <p style="color: darkgreen; font-weight: 600">
-      Man kann auf die einzlnen Tickets klicken und kommt dann auf die Detailseite. Später wird man
-      hier die Historie und das Ticket bearbeiten können.
-    </p>
-    <label>
-      <input type="checkbox" v-model="showClosedTickets" /> Geschlossene Tickets anzeigen
-    </label>
+    <div class="filter-checkbox">
+      <label>
+        <input type="checkbox" v-model="showClosedRejected" /> Geschlossene und abgelehnte Tickets
+        anzeigen
+      </label>
+      <div>
+        <label for="filter">Filter:</label>
+        <input id="filter" v-model="filterText" placeholder="Alles durchsuchen..." />
+      </div>
+    </div>
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Beschreibung</th>
-          <th>Kategorie</th>
-          <th>Status</th>
-        </tr>
-        <tr>
-          <th><input type="text" v-model="searchId" placeholder="Suche nach ID..." /></th>
-          <th>
-            <input
-              type="text"
-              v-model="searchBeschreibung"
-              placeholder="Suche nach Beschreibung..."
-            />
+          <th @click="sortTable('id')">
+            ID <span>{{ getSortIcon('id') }}</span>
           </th>
-          <th>
-            <select v-model="searchKategorie">
-              <option value="">Alle Kategorien</option>
-              <option v-for="(label, value) in kategorien" :key="value" :value="value">
-                {{ label }}
-              </option>
-            </select>
+          <th @click="sortTable('beschreibung')">
+            Beschreibung <span>{{ getSortIcon('beschreibung') }}</span>
           </th>
-          <th>
-            <select v-model="searchStatus">
-              <option value="">Alle Status</option>
-              <option v-for="(label, value) in status" :key="value" :value="value">
-                {{ label }}
-              </option>
-            </select>
+          <th @click="sortTable('kategorie')">
+            Kategorie <span>{{ getSortIcon('kategorie') }}</span>
+          </th>
+          <th @click="sortTable('status')">
+            Status <span>{{ getSortIcon('status') }}</span>
+          </th>
+          <th @click="sortTable('erstelldatum')">
+            Erstellt am <span>{{ getSortIcon('erstelldatum') }}</span>
           </th>
         </tr>
       </thead>
@@ -52,6 +37,7 @@
           <td>{{ ticket.beschreibung }}</td>
           <td>{{ capitalize(ticket.kategorie) }}</td>
           <td>{{ capitalize(ticket.status) }}</td>
+          <td>{{ new Date(ticket.erstelldatum).toLocaleString() }}</td>
         </tr>
       </tbody>
     </table>
@@ -62,15 +48,16 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import API_URL from '@/api'
+import { useUserStore } from '@/stores/user'
 
 const tickets = ref([])
-const showClosedTickets = ref(false)
-const searchId = ref('')
-const searchBeschreibung = ref('')
-const searchKategorie = ref('')
-const searchStatus = ref('')
+const showClosedRejected = ref(false)
+const filterText = ref('')
 const kategorien = ref({})
 const status = ref({})
+const userStore = useUserStore()
+
+const isStudent = computed(() => userStore.benutzer_rolle === 'student')
 
 const loadAllTickets = async () => {
   const response = await fetch(`${API_URL}/ticket/getAllTickets`)
@@ -90,22 +77,41 @@ const loadStatus = async () => {
   status.value = data
 }
 
+const sortKey = ref('')
+const sortOrder = ref(1)
+
+const sortTable = (key) => {
+  if (sortKey.value === key) {
+    sortOrder.value = -sortOrder.value
+  } else {
+    sortKey.value = key
+    sortOrder.value = 1
+  }
+}
+
+const getSortIcon = (key) => {
+  if (sortKey.value === key) {
+    return sortOrder.value === 1 ? '▲' : '▼'
+  }
+  return ''
+}
+
 const filteredTickets = computed(() => {
-  return tickets.value
-    .filter((ticket) => showClosedTickets.value || ticket.status !== 'geschlossen')
-    .filter((ticket) => ticket.id.toString().includes(searchId.value))
-    .filter((ticket) =>
-      ticket.beschreibung.toLowerCase().includes(searchBeschreibung.value.toLowerCase()),
+  const sortedTickets = [...tickets.value].sort((a, b) => {
+    if (a[sortKey.value] < b[sortKey.value]) return -1 * sortOrder.value
+    if (a[sortKey.value] > b[sortKey.value]) return 1 * sortOrder.value
+    return 0
+  })
+  return sortedTickets.filter((ticket) => {
+    const searchText = filterText.value.toLowerCase()
+    return (
+      (showClosedRejected.value || !['abgelehnt', 'geschlossen'].includes(ticket.status)) &&
+      (ticket.beschreibung.toLowerCase().includes(searchText) ||
+        ticket.id.toLowerCase().includes(searchText) ||
+        ticket.kategorie.toLowerCase().includes(searchText) ||
+        ticket.status.toLowerCase().includes(searchText))
     )
-    .filter(
-      (ticket) =>
-        !searchKategorie.value ||
-        ticket.kategorie.toLowerCase() === searchKategorie.value.toLowerCase(),
-    )
-    .filter(
-      (ticket) =>
-        !searchStatus.value || ticket.status.toLowerCase() === searchStatus.value.toLowerCase(),
-    )
+  })
 })
 
 const router = useRouter()

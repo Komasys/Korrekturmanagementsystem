@@ -5,6 +5,7 @@ export const useUserStore = defineStore('user', {
     name: '',
     email: '',
     benutzer_id: '',
+    benutzer_rolle: '',
   }),
   actions: {
     setEmail(email) {
@@ -15,6 +16,9 @@ export const useUserStore = defineStore('user', {
     },
     setBenutzerId(benutzer_id) {
       this.benutzer_id = benutzer_id
+    },
+    setBenutzerRolle(benutzer_rolle) {
+      this.benutzer_rolle = benutzer_rolle
     },
   },
 })

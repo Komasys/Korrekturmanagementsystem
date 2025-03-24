@@ -14,7 +14,7 @@ def set_ticket():
         kategorie = data['kategorie'],
         prioritaet = "NIEDRIG",
         kurs_id = data['kurs_id'],
-        ersteller_id = data['benutzer_id'], ##########
+        ersteller_id = data['benutzer_id'],
 
     )
     db.session.add(new_ticket)
@@ -74,6 +74,15 @@ def get_all_tickets():
 @ticket_bp.route('/getTicketsByUser/<string:benutzer_id>', methods=['GET'])
 def get_tickets_by_user(benutzer_id):
     tickets = Ticket.query.filter_by(ersteller_id=benutzer_id).all()
+    tickets = [ticket.serialize() for ticket in tickets]
+    for ticket in tickets:
+        ticket_status = Historie.query.filter_by(ticket_id=ticket['id']).order_by(Historie.geaendert_am.desc()).first()
+        ticket['status'] = ticket_status.status.value if ticket_status else 'Unbekannt'
+    return jsonify(tickets), 200
+
+@ticket_bp.route('/getTicketsByBearbeiter/<string:bearbeiter_id>', methods=['GET'])
+def get_tickets_by_bearbeiter(bearbeiter_id):
+    tickets = Ticket.query.join(Historie).filter(Historie.bearbeiter_id == bearbeiter_id).all()
     tickets = [ticket.serialize() for ticket in tickets]
     for ticket in tickets:
         ticket_status = Historie.query.filter_by(ticket_id=ticket['id']).order_by(Historie.geaendert_am.desc()).first()

@@ -12,7 +12,7 @@
     <p>---Anhang coming soon---</p>
   </div>
 
-  <div class="card">
+  <div class="card" v-if="canEditTicket">
     <h2>Historie</h2>
     <div v-for="eintrag in ticket.historie" :key="eintrag.id" class="comment">
       <p>
@@ -24,14 +24,10 @@
     <form @submit.prevent="submitEdit">
       <div>
         <h2>Interne Kommunikation</h2>
-        <p style="color: darkred">
-          Statuslogik muss noch implementiert werden. (Z.b. wenn Abgelehnt dann nicht mehr
-          bearbeitbar etc.)<br />Wer welchen Status einstellen kann muss auch noch implementiert
-          werden.
-        </p>
+
         <p style="color: darkred"></p>
         <label for="status">Status:</label>
-        <select v-model="new_status" id="status">
+        <select v-model="new_status" id="status" required>
           <option value="ABGELEHNT">Abgelehnt</option>
           <option value="PRUEFUNG">Prüfung</option>
           <option value="ANPASSUNG">Anpassung</option>
@@ -60,14 +56,19 @@
 
   <div class="card">
     <h2>Rückfragen an Ticketersteller</h2>
-    <div v-for="kommentar in ticket.kommentare" :key="kommentar.id" class="comment">
-      <p>
-        <strong>{{ kommentar.benutzer_name }}</strong> am
-        {{ new Date(kommentar.erstelldatum).toLocaleString() }}
-      </p>
-      <p>{{ kommentar.nachricht }}</p>
+    <div v-if="ticket.kommentare && ticket.kommentare.length > 0">
+      <div v-for="kommentar in ticket.kommentare" :key="kommentar.id" class="comment">
+        <p>
+          <strong>{{ kommentar.benutzer_name }}</strong> am
+          {{ new Date(kommentar.erstelldatum).toLocaleString() }}
+        </p>
+        <p>{{ kommentar.nachricht }}</p>
+      </div>
     </div>
-    <form @submit.prevent="submitComment">
+    <div v-else>
+      <p>Keine Kommentare vorhanden</p>
+    </div>
+    <form @submit.prevent="submitComment" v-if="canSubmitComment">
       <textarea v-model="newComment" placeholder="Kommentar hinzufügen"></textarea>
       <button type="submit">Kommentar hinzufügen</button>
     </form>
@@ -75,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import API_URL from '@/api'
 import { useUserStore } from '@/stores/user'
 
@@ -127,7 +128,7 @@ const submitEdit = async () => {
     body: JSON.stringify({
       ticket_id: props.ticketId,
       status: new_status.value,
-      prioritaet: new_prioritaet.value,
+      prioritaet: (new_prioritaet.value || ticket.value.prioritaet)?.toUpperCase(),
       beschreibung: historieBeschreibung.value,
       bearbeiter_id: userStore.benutzer_id,
     }),
@@ -140,6 +141,18 @@ const submitEdit = async () => {
     console.error('Failed to update ticket')
   }
 }
+
+const canEditTicket = computed(() => {
+  return (
+    (['dozent', 'tutor', 'admin'].includes(userStore.benutzer_rolle) &&
+      ['neu', 'prüfung'].includes(ticket.value.status)) ||
+    (['qm', 'admin'].includes(userStore.benutzer_rolle) && ticket.value.status === 'anpassung')
+  )
+})
+
+const canSubmitComment = computed(() => {
+  return !['geschlossen', 'abgelehnt'].includes(ticket.value.status)
+})
 
 watch(() => props.ticketId, loadTicketDetails, { immediate: true })
 </script>
@@ -206,6 +219,7 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin: 0px 8px;
 }
 
 button:hover {

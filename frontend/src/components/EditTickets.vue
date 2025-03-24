@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <h1>Meine Tickets</h1>
+  <div v-if="!isStudent">
+    <h1>Bearbeitete Tickets</h1>
     <div class="filter-checkbox">
       <label>
-        <input type="checkbox" v-model="showClosedRejected" /> Geschlossene und abgelehnte Tickets
-        anzeigen
+        <input type="checkbox" v-model="showClosedRejected" />
+        Geschlossene und abgelehnte Tickets anzeigen
       </label>
       <div>
         <label for="filter">Filter:</label>
@@ -45,29 +45,21 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, capitalize } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, capitalize, computed } from 'vue'
 import API_URL from '@/api'
 import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const tickets = ref([])
-const filterText = ref('')
-const showClosedRejected = ref(false)
 const router = useRouter()
+const isStudent = computed(() => userStore.benutzer_rolle === 'student')
+
+const showClosedRejected = ref(false)
+const filterText = ref('')
 
 const sortKey = ref('')
 const sortOrder = ref(1)
-
-const loadAllUserTickets = async () => {
-  const response = await fetch(`${API_URL}/ticket/getTicketsByUser/${userStore.benutzer_id}`)
-  const data = await response.json()
-  tickets.value = data
-}
-
-const showDetails = (ticketId) => {
-  router.push({ name: 'ticket-details', params: { id: ticketId } })
-}
 
 const sortTable = (key) => {
   if (sortKey.value === key) {
@@ -94,8 +86,7 @@ const filteredTickets = computed(() => {
   return sortedTickets.filter((ticket) => {
     const searchText = filterText.value.toLowerCase()
     return (
-      (showClosedRejected.value ||
-        !['abgelehnt', 'geschlossen'].includes(ticket.status.toLowerCase())) &&
+      (showClosedRejected.value || !['abgelehnt', 'geschlossen'].includes(ticket.status)) &&
       (ticket.beschreibung.toLowerCase().includes(searchText) ||
         ticket.id.toLowerCase().includes(searchText) ||
         ticket.kategorie.toLowerCase().includes(searchText) ||
@@ -104,8 +95,18 @@ const filteredTickets = computed(() => {
   })
 })
 
+const loadBearbeiteteTickets = async () => {
+  const response = await fetch(`${API_URL}/ticket/getTicketsByBearbeiter/${userStore.benutzer_id}`)
+  const data = await response.json()
+  tickets.value = data
+}
+
+const showDetails = (ticketId) => {
+  router.push({ name: 'ticket-details', params: { id: ticketId } })
+}
+
 onMounted(() => {
-  loadAllUserTickets()
+  loadBearbeiteteTickets()
 })
 </script>
 

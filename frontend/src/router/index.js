@@ -8,6 +8,7 @@ import TicketDetails from '@/components/TicketDetails.vue'
 import TicketCreate from '@/components/TicketCreate.vue'
 import MyTickets from '@/components/MyTickets.vue'
 import AllTickets from '@/components/AllTickets.vue'
+import BearbeiteteTickets from '@/components/EditTickets.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,7 +28,7 @@ const router = createRouter({
       name: 'signout',
       beforeEnter: (to, from, next) => {
         localStorage.removeItem('access_token')
-        next({ name: 'signin' })
+        next({ name: 'login' })
       },
     },
     {
@@ -56,6 +57,11 @@ const router = createRouter({
           name: 'ticket-details',
           component: TicketDetails,
           props: (route) => ({ ticketId: route.params.id }),
+        },
+        {
+          path: 'bearbeitete-tickets',
+          name: 'bearbeitete-tickets',
+          component: BearbeiteteTickets,
         },
       ],
     },
@@ -87,7 +93,17 @@ router.beforeEach(async (to, from, next) => {
         userStore.setEmail(userInfo.email)
         userStore.setName(userInfo.name)
         userStore.setBenutzerId(userInfo.id)
-        next()
+        userStore.setBenutzerRolle(userInfo.rolle)
+
+        if (to.name === 'dashboard' || to.name === 'login') {
+          next(
+            userStore.benutzer_rolle === 'student'
+              ? { name: 'my-tickets' }
+              : { name: 'all-tickets' },
+          )
+        } else {
+          next()
+        }
       } else {
         console.error('Unauthorized. Redirecting to sign-in.')
         localStorage.removeItem('access_token')
