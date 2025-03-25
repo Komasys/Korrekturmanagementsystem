@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isStudent">
     <h1>Bearbeitete Tickets</h1>
-    <div class="filter-checkbox">
+    <div class="filter-container">
       <label>
         <input type="checkbox" v-model="showClosedRejected" />
         Geschlossene und abgelehnte Tickets anzeigen
@@ -111,6 +111,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

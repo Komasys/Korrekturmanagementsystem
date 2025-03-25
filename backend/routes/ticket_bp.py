@@ -1,23 +1,48 @@
 from flask import Blueprint, request, jsonify
-from models import db, Ticket, Kategorie, Benutzer, Kurs, Historie, Kommentar, TicketStatus
+from models import db, Ticket, Kategorie, Benutzer, Kurs, Historie, Kommentar, TicketStatus, Anhang
 from datetime import datetime
+import os
+from werkzeug.utils import secure_filename
+
 ticket_bp = Blueprint('ticket_bp', __name__)
+
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @ticket_bp.route('/setTicket', methods=['POST'])
 def set_ticket():
-    data = request.get_json()
+    if 'file' not in request.files:
+        return jsonify({"message": "Keine Datei hochgeladen!"}), 400
+
+    file = request.files['file']
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(UPLOAD_FOLDER, filename))
+    else:
+        return jsonify({"message": "Ungültige Datei!"}), 400
+
+    data = request.form.to_dict()
     if not data:
-        return jsonify({"message": "Ungültige JSON-Daten!"}), 400
+        return jsonify({"message": "Ungültige Formulardaten!"}), 400
 
     new_ticket = Ticket(
         beschreibung = data['beschreibung'],
         kategorie = data['kategorie'],
         prioritaet = "NIEDRIG",
         kurs_id = data['kurs_id'],
-        ersteller_id = data['benutzer_id'],
-
+        ersteller_id = data['benutzer_id']
     )
     db.session.add(new_ticket)
+    db.session.commit()
+
+    new_anhang = Anhang(
+        ticket_id = new_ticket.id,
+        dateiname = filename if file else None
+    )
+    db.session.add(new_anhang)
     db.session.commit()
 
     new_historie = Historie(
@@ -51,7 +76,9 @@ def get_ticket(ticket_id):
     ticket_data['kommentare'] = [kommentar.serialize() for kommentar in kommentare]
     ticket_data['historie'] = [eintrag.serialize() for eintrag in historie]
 
-    # Include user names in comments
+    anhaenge = Anhang.query.filter_by(ticket_id=ticket_id).all()
+    ticket_data['anhaenge'] = [anhang.serialize() for anhang in anhaenge]
+
     for kommentar in ticket_data['kommentare']:
         benutzer = Benutzer.query.get(kommentar['benutzer_id'])
         kommentar['benutzer_name'] = benutzer.name if benutzer else 'Unbekannt'
@@ -155,3 +182,14 @@ def update_ticket():
     db.session.commit()
 
     return jsonify({"message": "Ticket aktualisiert!"}), 200
+
+@ticket_bp.route('/getKursTicketsByUser/<string:benutzer_id>', methods=['GET'])
+def get_kurs_tickets_by_user(benutzer_id):
+    kurse = Kurs.query.filter_by(kursleitung_id=benutzer_id).all()
+    kurs_ids = [kurs.id for kurs in kurse]
+    tickets = Ticket.query.filter(Ticket.kurs_id.in_(kurs_ids)).all()
+    tickets = [ticket.serialize() for ticket in tickets]
+    for ticket in tickets:
+        ticket_status = Historie.query.filter_by(ticket_id=ticket['id']).order_by(Historie.geaendert_am.desc()).first()
+        ticket['status'] = ticket_status.status.value if ticket_status else 'Unbekannt'
+    return jsonify(tickets), 200

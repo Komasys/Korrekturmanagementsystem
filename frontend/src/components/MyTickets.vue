@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Meine Tickets</h1>
-    <div class="filter-checkbox">
+    <div class="filter-container">
       <label>
         <input type="checkbox" v-model="showClosedRejected" /> Geschlossene und abgelehnte Tickets
         anzeigen
@@ -65,8 +65,12 @@ const loadAllUserTickets = async () => {
   tickets.value = data
 }
 
-const showDetails = (ticketId) => {
-  router.push({ name: 'ticket-details', params: { id: ticketId } })
+const showDetails = async (ticketId) => {
+  try {
+    await router.push({ name: 'ticket-details', params: { id: ticketId } })
+  } catch (error) {
+    console.error('Error navigating to ticket details:', error)
+  }
 }
 
 const sortTable = (key) => {
@@ -110,6 +114,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

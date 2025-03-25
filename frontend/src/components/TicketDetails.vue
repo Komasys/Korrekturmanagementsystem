@@ -2,35 +2,48 @@
   <div class="card">
     <h2>Ticket Details</h2>
     <p><strong>ID:</strong> {{ ticket.id }}</p>
-    <p><strong>Erstellt von:</strong> {{ ticket.ersteller_name }}</p>
+    <p><strong>Erstellt von:</strong> {{ capitalize(ticket.ersteller_name) }}</p>
     <p><strong>Erstellt am:</strong> {{ new Date(ticket.erstelldatum).toLocaleString() }}</p>
     <p><strong>Kurs:</strong> {{ ticket.kurs_name }}</p>
-    <p><strong>Kategorie:</strong> {{ ticket.kategorie }}</p>
+    <p><strong>Kategorie:</strong> {{ capitalize(ticket.kategorie) }}</p>
     <p><strong>Beschreibung:</strong> {{ ticket.beschreibung }}</p>
+    <div v-if="ticket.anhaenge && ticket.anhaenge.length > 0">
+      <h2>Anhänge</h2>
+      <ul>
+        <li v-for="anhang in ticket.anhaenge" :key="anhang.id">
+          <a :href="`${API_URL}/uploads/${anhang.dateiname}`" target="_blank">{{
+            anhang.dateiname
+          }}</a>
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>Keine Anhänge vorhanden</p>
+    </div>
     <button>{{ ticket.status }}</button>
     <button>{{ ticket.prioritaet }}</button>
-    <p>---Anhang coming soon---</p>
   </div>
 
-  <div class="card" v-if="canEditTicket">
+  <div class="card">
     <h2>Historie</h2>
     <div v-for="eintrag in ticket.historie" :key="eintrag.id" class="comment">
       <p>
-        <strong>{{ eintrag.bearbeiter_name }}</strong> am
-        {{ new Date(eintrag.geaendert_am).toLocaleString() }} | Status: {{ eintrag.status }}
+        <strong>{{ capitalize(eintrag.bearbeiter_name) }}</strong> am
+        {{ new Date(eintrag.geaendert_am).toLocaleString() }} | Status:
+        {{ capitalize(eintrag.status) }}
       </p>
       <p>{{ eintrag.beschreibung }}</p>
     </div>
-    <form @submit.prevent="submitEdit">
+    <form @submit.prevent="submitEdit" v-if="canEditTicket">
       <div>
         <h2>Interne Kommunikation</h2>
 
         <p style="color: darkred"></p>
         <label for="status">Status:</label>
         <select v-model="new_status" id="status" required>
+          <option value="PRUEFUNG">Prüfung (Tutor/Dozent)</option>
+          <option value="ANPASSUNG">Anpassung (QM/Prüfungsamt)</option>
           <option value="ABGELEHNT">Abgelehnt</option>
-          <option value="PRUEFUNG">Prüfung</option>
-          <option value="ANPASSUNG">Anpassung</option>
           <option value="GESCHLOSSEN">Geschlossen</option>
         </select>
       </div>
@@ -76,7 +89,7 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, capitalize } from 'vue'
 import API_URL from '@/api'
 import { useUserStore } from '@/stores/user'
 
@@ -84,7 +97,19 @@ const props = defineProps({
   ticketId: String,
 })
 
-const ticket = ref({})
+const ticket = ref({
+  id: '',
+  ersteller_name: '',
+  erstelldatum: '',
+  kurs_name: '',
+  kategorie: '',
+  beschreibung: '',
+  status: '',
+  prioritaet: '',
+  anhaenge: [],
+  historie: [],
+  kommentare: [],
+})
 const newComment = ref('')
 const new_status = ref('')
 const new_prioritaet = ref('')
@@ -97,6 +122,9 @@ const loadTicketDetails = async () => {
   if (response.ok) {
     const data = await response.json()
     ticket.value = data
+    console.log(data)
+    new_status.value = data.status.toUpperCase()
+    new_prioritaet.value = data.prioritaet.toUpperCase()
   } else {
     console.error('Failed to load ticket details')
   }

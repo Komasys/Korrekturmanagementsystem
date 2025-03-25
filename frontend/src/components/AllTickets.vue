@@ -1,12 +1,17 @@
 <template>
   <div v-if="!isStudent">
     <h1>Alle Tickets</h1>
-    <div class="filter-checkbox">
-      <label>
-        <input type="checkbox" v-model="showClosedRejected" /> Geschlossene und abgelehnte Tickets
-        anzeigen
-      </label>
-      <div>
+    <div class="filter-container">
+      <div class="filter-options">
+        <label>
+          <input type="checkbox" v-model="showClosedRejected" /> Geschlossene und abgelehnte Tickets
+          anzeigen
+        </label>
+        <label>
+          <input type="checkbox" v-model="showMyKursTickets" /> Meine Kurstickets anzeigen
+        </label>
+      </div>
+      <div class="filter-search">
         <label for="filter">Filter:</label>
         <input id="filter" v-model="filterText" placeholder="Alles durchsuchen..." />
       </div>
@@ -36,7 +41,7 @@
           <td>{{ ticket.id }}</td>
           <td>{{ ticket.beschreibung }}</td>
           <td>{{ capitalize(ticket.kategorie) }}</td>
-          <td>{{ capitalize(ticket.status) }}</td>
+          <td>{{ ticket.status }}</td>
           <td>{{ new Date(ticket.erstelldatum).toLocaleString() }}</td>
         </tr>
       </tbody>
@@ -51,7 +56,9 @@ import API_URL from '@/api'
 import { useUserStore } from '@/stores/user'
 
 const tickets = ref([])
+const kursTickets = ref([])
 const showClosedRejected = ref(false)
+const showMyKursTickets = ref(false)
 const filterText = ref('')
 const kategorien = ref({})
 const status = ref({})
@@ -59,10 +66,24 @@ const userStore = useUserStore()
 
 const isStudent = computed(() => userStore.benutzer_rolle === 'student')
 
+const allowedStatus = {
+  student: [],
+  dozent: ['neu', 'prüfung', 'abgelehnt', 'geschlossen'],
+  tutor: ['neu', 'prüfung', 'abgelehnt', 'geschlossen'],
+  qm: ['anpassung', 'abgelehnt', 'geschlossen'],
+  admin: ['neu', 'abgelehnt', 'prüfung', 'anpassung', 'geschlossen'],
+}
+
 const loadAllTickets = async () => {
   const response = await fetch(`${API_URL}/ticket/getAllTickets`)
   const data = await response.json()
   tickets.value = data
+}
+
+const loadKursTickets = async () => {
+  const response = await fetch(`${API_URL}/ticket/getKursTicketsByUser/${userStore.benutzer_id}`)
+  const data = await response.json()
+  kursTickets.value = data
 }
 
 const loadKategorien = async () => {
@@ -104,7 +125,15 @@ const filteredTickets = computed(() => {
   })
   return sortedTickets.filter((ticket) => {
     const searchText = filterText.value.toLowerCase()
+    const isKursTicket = showMyKursTickets.value
+      ? kursTickets.value.some((kursTicket) => kursTicket.id === ticket.id)
+      : true
+    const isAllowedStatus = allowedStatus[userStore.benutzer_rolle].includes(
+      ticket.status.toLowerCase(),
+    )
     return (
+      isKursTicket &&
+      isAllowedStatus &&
       (showClosedRejected.value || !['abgelehnt', 'geschlossen'].includes(ticket.status)) &&
       (ticket.beschreibung.toLowerCase().includes(searchText) ||
         ticket.id.toLowerCase().includes(searchText) ||
@@ -127,12 +156,30 @@ const capitalize = (str) => {
 
 onMounted(() => {
   loadAllTickets()
+  loadKursTickets()
   loadKategorien()
   loadStatus()
 })
 </script>
 
 <style scoped>
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-options {
+  display: flex;
+  gap: 20px;
+}
+
+.filter-search {
+  display: flex;
+  align-items: center;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

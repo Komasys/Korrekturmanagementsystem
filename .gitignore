@@ -48,3 +48,5 @@ __pycache__/
 /cypress/screenshots/
 
 */instance/
+*/uploads/
+*/public/uploads/

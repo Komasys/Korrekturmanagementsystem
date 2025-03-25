@@ -6,8 +6,3 @@
 body {
   margin: 0px;
 }
-
-.filter-checkbox {
-  display: flex;
-  justify-content: space-between;
-}

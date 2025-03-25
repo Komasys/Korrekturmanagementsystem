@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
@@ -12,6 +12,7 @@ from routes.auth_bp import auth_bp
 from routes.kurs_bp import kurs_bp
 from routes.ticket_bp import ticket_bp
 from routes.lernmaterial_bp import lernmaterial_bp
+from routes.uploads_bp import uploads_bp
 
 # Initialisierung der App
 app = Flask(__name__)
@@ -29,6 +30,7 @@ blueprints = [
     (kurs_bp, "/kurs"),
     (lernmaterial_bp, "/lernmaterial"),
     (ticket_bp, "/ticket"),
+    (uploads_bp, ""),
 ]
 
 for bp, prefix in blueprints:

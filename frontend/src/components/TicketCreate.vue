@@ -41,6 +41,11 @@
         <textarea id="beschreibung" v-model="beschreibung" required></textarea>
       </div>
 
+      <div class="form-group">
+        <label for="file">Datei-Upload:</label>
+        <input type="file" id="file" @change="handleFileUpload" accept="image/*,video/*" />
+      </div>
+
       <button type="submit">Absenden</button>
       <p v-if="message">{{ message }}</p>
     </form>
@@ -60,6 +65,7 @@ const lernmaterialien = ref([])
 const beschreibung = ref('')
 const message = ref('')
 const kurse = ref([])
+const file = ref(null)
 
 const userStore = useUserStore()
 
@@ -87,17 +93,30 @@ onMounted(() => {
   loadKurse()
 })
 
+const handleFileUpload = (event) => {
+  const uploadedFile = event.target.files[0]
+  if (uploadedFile.size > 2 * 1024 * 1024) {
+    alert('Die Datei darf nicht größer als 2MB sein.')
+    file.value = null
+    return
+  }
+  file.value = uploadedFile
+}
+
 const submitForm = async () => {
+  const formData = new FormData()
+  formData.append('kategorie', kategorie.value)
+  formData.append('kurs_id', kurs_id.value)
+  formData.append('lernmaterial_id', lernmaterial.value)
+  formData.append('beschreibung', beschreibung.value)
+  formData.append('benutzer_id', userStore.benutzer_id)
+  if (file.value) {
+    formData.append('file', file.value)
+  }
+
   const response = await fetch(`${API_URL}/ticket/setTicket`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      kategorie: kategorie.value,
-      kurs_id: kurs_id.value,
-      lernmaterial_id: lernmaterial.value,
-      beschreibung: beschreibung.value,
-      benutzer_id: userStore.benutzer_id,
-    }),
+    body: formData,
   })
 
   const result = await response.json()
@@ -124,7 +143,8 @@ label {
 }
 
 textarea,
-select {
+select,
+input[type='file'] {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
