@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from . import db
 
 class Kommentar(db.Model):
@@ -9,7 +9,7 @@ class Kommentar(db.Model):
     benutzer_id = db.Column(UUID(as_uuid=True), db.ForeignKey('benutzer.id'), nullable=False)
     ticket_id = db.Column(UUID(as_uuid=True), db.ForeignKey('ticket.id'), nullable=False)
     nachricht = db.Column(db.Text, nullable=False)
-    erstelldatum = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    erstelldatum = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
 
     def serialize(self):
         return {

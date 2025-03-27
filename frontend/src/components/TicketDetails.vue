@@ -43,7 +43,7 @@
         <p style="color: darkred"></p>
         <label for="status">Status:</label>
         <select v-model="new_status" id="status" required>
-          <option value="PRUEFUNG">Prüfung (Tutor/Dozent)</option>
+          <option value="PRÜFUNG">Prüfung (Tutor/Dozent)</option>
           <option value="ANPASSUNG">Anpassung (QM/Prüfungsamt)</option>
           <option value="ABGELEHNT">Abgelehnt</option>
           <option value="GESCHLOSSEN">Geschlossen</option>
@@ -157,8 +157,8 @@ const submitEdit = async () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       ticket_id: props.ticketId,
-      status: new_status.value,
-      prioritaet: (new_prioritaet.value || ticket.value.prioritaet)?.toUpperCase(),
+      status: new_status.value.toLowerCase(),
+      prioritaet: (new_prioritaet.value || ticket.value.prioritaet)?.toLowerCase(),
       beschreibung: historieBeschreibung.value,
       bearbeiter_id: userStore.benutzer_id,
     }),

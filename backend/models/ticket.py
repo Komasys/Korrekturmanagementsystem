@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from .enums import Kategorie, Prioritaet
 from . import db
 
@@ -9,7 +9,7 @@ class Ticket(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     beschreibung = db.Column(db.Text, nullable=False)
     kategorie = db.Column(db.Enum(Kategorie), nullable=False)
-    erstelldatum = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    erstelldatum = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     prioritaet = db.Column(db.Enum(Prioritaet))
     kurs_id = db.Column(UUID(as_uuid=True), db.ForeignKey('kurs.id'), nullable=False)
     ersteller_id = db.Column(UUID(as_uuid=True), db.ForeignKey('benutzer.id'), nullable=False)

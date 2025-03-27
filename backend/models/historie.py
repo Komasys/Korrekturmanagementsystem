@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from .enums import TicketStatus
 from . import db
 
@@ -10,7 +10,7 @@ class Historie(db.Model):
     ticket_id = db.Column(UUID(as_uuid=True), db.ForeignKey('ticket.id'), nullable=False)
     bearbeiter_id = db.Column(UUID(as_uuid=True), db.ForeignKey('benutzer.id'), nullable=True)
     beschreibung = db.Column(db.Text, nullable=False)
-    geaendert_am = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    geaendert_am = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     status = db.Column(db.Enum(TicketStatus), nullable=False)
     pruefer_id = db.Column(UUID(as_uuid=True), db.ForeignKey('benutzer.id'), nullable=True)
 
