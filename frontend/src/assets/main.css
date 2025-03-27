@@ -7,6 +7,10 @@ body {
   margin: 0px;
 }
 
+.titel {
+  margin-left: 10px;
+}
+
 .filter-container {
   display: flex;
   flex-direction: row;
@@ -17,6 +21,10 @@ body {
 }
 
 @media screen and (max-width: 600px) {
+  label {
+    font-size: 14px;
+  }
+
   .filter-container {
     display: flex;
     flex-direction: column;
@@ -46,7 +54,6 @@ table {
 }
 
 .cell {
-  max-width: 150px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

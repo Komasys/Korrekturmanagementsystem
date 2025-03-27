@@ -237,7 +237,7 @@ h2 {
 
 p {
   color: #555;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 p strong {

@@ -1,6 +1,6 @@
 <template>
   <div v-if="!isStudent">
-    <h1>Bearbeitete Tickets</h1>
+    <h1 class="titel">Bearbeitete Tickets</h1>
     <div class="filter-container">
       <label>
         <input type="checkbox" v-model="showClosedRejected" />
@@ -21,7 +21,7 @@
           <th class="cell" @click="sortTable('beschreibung')">
             Beschreibung <span>{{ getSortIcon('beschreibung') }}</span>
           </th>
-          <th @click="sortTable('kategorie')">
+          <th class="cell" @click="sortTable('kategorie')">
             Kategorie <span>{{ getSortIcon('kategorie') }}</span>
           </th>
           <th @click="sortTable('status')">
@@ -37,7 +37,9 @@
           <td class="priority-bar" :class="getPriorityClass(ticket.prioritaet)"></td>
           <td class="cell">{{ ticket.id }}</td>
           <td class="cell">{{ ticket.beschreibung }}</td>
-          <td class="cell">{{ capitalize(ticket.kategorie) }}</td>
+          <td class="cell">
+            {{ ticket.kategorie.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()) }}
+          </td>
           <td>{{ capitalize(ticket.status) }}</td>
           <td>{{ new Date(ticket.erstelldatum).toLocaleDateString() }}</td>
         </tr>

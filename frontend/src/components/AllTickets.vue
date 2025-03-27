@@ -1,6 +1,6 @@
 <template>
   <div v-if="!isStudent">
-    <h1>Alle Tickets</h1>
+    <h1 class="titel">Alle Tickets</h1>
     <div class="filter-container">
       <div class="filter-options">
         <label>
@@ -27,7 +27,7 @@
             <th class="cell" @click="sortTable('beschreibung')">
               Beschreibung <span>{{ getSortIcon('beschreibung') }}</span>
             </th>
-            <th @click="sortTable('kategorie')">
+            <th class="cell" @click="sortTable('kategorie')">
               Kategorie <span>{{ getSortIcon('kategorie') }}</span>
             </th>
             <th @click="sortTable('status')">
@@ -43,7 +43,9 @@
             <td class="priority-bar" :class="getPriorityClass(ticket.prioritaet)"></td>
             <td class="cell">{{ ticket.id }}</td>
             <td class="cell">{{ ticket.beschreibung }}</td>
-            <td class="cell">{{ capitalize(ticket.kategorie) }}</td>
+            <td class="cell">
+              {{ ticket.kategorie.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()) }}
+            </td>
             <td class="cell">{{ ticket.status.toUpperCase() }}</td>
             <td>
               <time :datetime="ticket.erstelldatum">{{
@@ -155,11 +157,6 @@ const router = useRouter()
 
 const showDetails = (ticketId) => {
   router.push({ name: 'ticket-details', params: { id: ticketId } })
-}
-
-const capitalize = (str) => {
-  if (!str) return ''
-  return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 const getPriorityClass = (priority) => {

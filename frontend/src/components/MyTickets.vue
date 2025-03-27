@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Meine Tickets</h1>
+    <h1 class="titel">Meine Tickets</h1>
     <div class="filter-container">
       <label>
         <input type="checkbox" v-model="showClosedRejected" /> Geschlossene und abgelehnte Tickets
@@ -35,7 +35,9 @@
         <tr v-for="ticket in filteredTickets" :key="ticket.id" @click="showDetails(ticket.id)">
           <td class="cell">{{ ticket.id }}</td>
           <td class="cell">{{ ticket.beschreibung }}</td>
-          <td class="cell">{{ capitalize(ticket.kategorie) }}</td>
+          <td class="cell">
+            {{ ticket.kategorie.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()) }}
+          </td>
           <td class="cell">{{ ticket.status.toUpperCase() }}</td>
           <td>{{ new Date(ticket.erstelldatum).toLocaleDateString() }}</td>
         </tr>
@@ -113,59 +115,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.filter-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0px 20px 5px 10px;
-  flex-wrap: wrap;
-}
-
-@media screen and (max-width: 600px) {
-  .filter-container {
-    display: flex;
-    flex-direction: column;
-    align-content: flex-start;
-    align-items: flex-start;
-  }
-
-  .filter-search {
-    flex-direction: column;
-    margin-bottom: 10px;
-  }
-  .filter-options {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.cell {
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-th,
-td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #f2f2f2;
-}
-
-tr:hover {
-  background-color: #f5f5f5;
-  cursor: pointer;
-}
-</style>
+<style scoped></style>
