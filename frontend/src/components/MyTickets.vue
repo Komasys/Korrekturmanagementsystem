@@ -14,30 +14,30 @@
     <table>
       <thead>
         <tr>
-          <th @click="sortTable('id')">
+          <th class="cell" @click="sortTable('id')">
             ID <span>{{ getSortIcon('id') }}</span>
           </th>
-          <th @click="sortTable('beschreibung')">
+          <th class="cell" @click="sortTable('beschreibung')">
             Beschreibung <span>{{ getSortIcon('beschreibung') }}</span>
           </th>
-          <th @click="sortTable('kategorie')">
+          <th class="cell" @click="sortTable('kategorie')">
             Kategorie <span>{{ getSortIcon('kategorie') }}</span>
           </th>
-          <th @click="sortTable('status')">
+          <th class="cell" @click="sortTable('status')">
             Status <span>{{ getSortIcon('status') }}</span>
           </th>
           <th @click="sortTable('erstelldatum')">
-            Erstellt am <span>{{ getSortIcon('erstelldatum') }}</span>
+            Datum <span>{{ getSortIcon('erstelldatum') }}</span>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="ticket in filteredTickets" :key="ticket.id" @click="showDetails(ticket.id)">
-          <td>{{ ticket.id }}</td>
-          <td>{{ ticket.beschreibung }}</td>
-          <td>{{ capitalize(ticket.kategorie) }}</td>
-          <td>{{ capitalize(ticket.status) }}</td>
-          <td>{{ new Date(ticket.erstelldatum).toLocaleString() }}</td>
+          <td class="cell">{{ ticket.id }}</td>
+          <td class="cell">{{ ticket.beschreibung }}</td>
+          <td class="cell">{{ capitalize(ticket.kategorie) }}</td>
+          <td class="cell">{{ ticket.status.toUpperCase() }}</td>
+          <td>{{ new Date(ticket.erstelldatum).toLocaleDateString() }}</td>
         </tr>
       </tbody>
     </table>
@@ -116,14 +116,41 @@ onMounted(() => {
 <style scoped>
 .filter-container {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 0px 20px 5px 10px;
+  flex-wrap: wrap;
+}
+
+@media screen and (max-width: 600px) {
+  .filter-container {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .filter-search {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  .filter-options {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+}
+
+.cell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 th,

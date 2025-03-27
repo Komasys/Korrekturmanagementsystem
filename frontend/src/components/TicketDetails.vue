@@ -20,8 +20,10 @@
     <div v-else>
       <p>Keine Anhänge vorhanden</p>
     </div>
-    <button>{{ ticket.status }}</button>
-    <button>{{ ticket.prioritaet }}</button>
+    <button class="btn1" :class="getPriorityClass(ticket.prioritaet)">
+      {{ ticket.prioritaet }}
+    </button>
+    <button class="btn1" :class="getStatusClass(ticket.status)">{{ ticket.status }}</button>
   </div>
 
   <div class="card">
@@ -182,6 +184,36 @@ const canSubmitComment = computed(() => {
   return !['geschlossen', 'abgelehnt'].includes(ticket.value.status)
 })
 
+const getPriorityClass = (priority) => {
+  switch (priority.toUpperCase()) {
+    case 'HOCH':
+      return 'priority-high'
+    case 'MITTEL':
+      return 'priority-medium'
+    case 'NIEDRIG':
+      return 'priority-low'
+    default:
+      return ''
+  }
+}
+
+const getStatusClass = (status) => {
+  switch (status.toUpperCase()) {
+    case 'NEU':
+      return 'status-new'
+    case 'PRÜFUNG':
+      return 'status-review'
+    case 'ANPASSUNG':
+      return 'status-adjustment'
+    case 'ABGELEHNT':
+      return 'status-rejected'
+    case 'GESCHLOSSEN':
+      return 'status-closed'
+    default:
+      return ''
+  }
+}
+
 watch(() => props.ticketId, loadTicketDetails, { immediate: true })
 </script>
 
@@ -250,10 +282,6 @@ button {
   margin: 0px 8px;
 }
 
-button:hover {
-  background-color: #0056b3;
-}
-
 select {
   width: 100%;
   padding: 8px;
@@ -268,5 +296,53 @@ label {
   margin-bottom: 4px;
   color: #333;
   font-weight: bold;
+}
+
+.btn1 {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.priority-high {
+  background-color: red;
+  color: rgb(0, 0, 0);
+}
+
+.priority-medium {
+  background-color: yellow;
+  color: rgb(0, 0, 0);
+}
+
+.priority-low {
+  background-color: lightgreen;
+  color: rgb(0, 0, 0);
+}
+
+.status-new {
+  background-color: lightblue;
+  color: rgb(0, 0, 0);
+}
+
+.status-review {
+  background-color: orange;
+  color: rgb(0, 0, 0);
+}
+
+.status-adjustment {
+  background-color: rgb(208, 0, 208);
+  color: rgb(0, 0, 0);
+}
+
+.status-rejected {
+  background-color: gray;
+  color: rgb(0, 0, 0);
+}
+
+.status-closed {
+  background-color: black;
+  color: rgb(255, 255, 255);
 }
 </style>

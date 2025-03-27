@@ -7,8 +7,6 @@
         >Bearbeitete Tickets</RouterLink
       >
       <RouterLink to="/dashboard/all-tickets" v-if="!isStudent">Alle Tickets</RouterLink>
-    </div>
-    <div class="sign-out">
       <SignOut />
     </div>
   </nav>
@@ -40,7 +38,7 @@ const isQM = computed(() => ['qm'].includes(userStore.benutzer_rolle))
 nav {
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px;
   background-color: #f0f0f0;
   align-items: center;
 }
@@ -49,6 +47,8 @@ nav {
   display: flex;
   width: 100%;
   justify-content: space-around;
+  align-items: center;
+  gap: 20px;
 }
 
 a {
@@ -56,7 +56,7 @@ a {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 18px;
+  font-size: clamp(0.7rem, 2vw, 1.25rem);
   font-weight: bold;
   color: black;
 }
@@ -79,21 +79,20 @@ p {
   position: fixed;
   bottom: 0;
   left: 0;
-  background-color: #48906a;
+  background-color: #14dcc1;
   border: none;
   border-radius: 50%;
+  font-weight: 700;
   cursor: pointer;
   padding: 10px;
   margin: 10px;
   width: 40px;
   height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgb(234, 234, 234);
+  color: rgb(255, 255, 255);
+  font-size: 20px;
 }
 
 .help:hover {
-  background-color: #3b6e4d;
+  background-color: #3b6e67;
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <form @submit.prevent="signin" id="signinForm">
+      <img src="@/assets/iu-logo-en-black-rgb-horizontal.png" alt="IU Logo" />
       <h1>Anmelden</h1>
       <input type="email" v-model="email" placeholder="Email" id="email" />
       <input type="password" v-model="password" placeholder="Password" id="password" />
@@ -41,15 +42,21 @@ const signin = async () => {
 </script>
 
 <style scoped>
+img {
+  height: 120px;
+}
+
 .container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
 
 h1 {
-  font-size: 2em;
+  font-size: 1.5em;
+  margin: -20px 0px 0px 0px;
 }
 
 p,
@@ -62,7 +69,7 @@ form {
   flex-direction: column;
   text-align: center;
   gap: 10px;
-  padding: 20px;
+  padding: 0px 20px 20px 20px;
   border: 1px solid #ccc;
   border-radius: 20px;
   background-color: #fff;

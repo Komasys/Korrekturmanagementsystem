@@ -16,36 +16,44 @@
         <input id="filter" v-model="filterText" placeholder="Alles durchsuchen..." />
       </div>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th @click="sortTable('id')">
-            ID <span>{{ getSortIcon('id') }}</span>
-          </th>
-          <th @click="sortTable('beschreibung')">
-            Beschreibung <span>{{ getSortIcon('beschreibung') }}</span>
-          </th>
-          <th @click="sortTable('kategorie')">
-            Kategorie <span>{{ getSortIcon('kategorie') }}</span>
-          </th>
-          <th @click="sortTable('status')">
-            Status <span>{{ getSortIcon('status') }}</span>
-          </th>
-          <th @click="sortTable('erstelldatum')">
-            Erstellt am <span>{{ getSortIcon('erstelldatum') }}</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="ticket in filteredTickets" :key="ticket.id" @click="showDetails(ticket.id)">
-          <td>{{ ticket.id }}</td>
-          <td>{{ ticket.beschreibung }}</td>
-          <td>{{ capitalize(ticket.kategorie) }}</td>
-          <td>{{ ticket.status }}</td>
-          <td>{{ new Date(ticket.erstelldatum).toLocaleString() }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th class="status_th"></th>
+            <th @click="sortTable('id')">
+              ID <span>{{ getSortIcon('id') }}</span>
+            </th>
+            <th class="cell" @click="sortTable('beschreibung')">
+              Beschreibung <span>{{ getSortIcon('beschreibung') }}</span>
+            </th>
+            <th @click="sortTable('kategorie')">
+              Kategorie <span>{{ getSortIcon('kategorie') }}</span>
+            </th>
+            <th @click="sortTable('status')">
+              Status <span>{{ getSortIcon('status') }}</span>
+            </th>
+            <th @click="sortTable('erstelldatum')">
+              Datum <span>{{ getSortIcon('erstelldatum') }}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="ticket in filteredTickets" :key="ticket.id" @click="showDetails(ticket.id)">
+            <td class="priority-bar" :class="getPriorityClass(ticket.prioritaet)"></td>
+            <td class="cell">{{ ticket.id }}</td>
+            <td class="cell">{{ ticket.beschreibung }}</td>
+            <td class="cell">{{ capitalize(ticket.kategorie) }}</td>
+            <td class="cell">{{ ticket.status.toUpperCase() }}</td>
+            <td>
+              <time :datetime="ticket.erstelldatum">{{
+                new Date(ticket.erstelldatum).toLocaleDateString()
+              }}</time>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -154,6 +162,19 @@ const capitalize = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
+const getPriorityClass = (priority) => {
+  switch (priority?.toUpperCase()) {
+    case 'HOCH':
+      return 'priority-high'
+    case 'MITTEL':
+      return 'priority-medium'
+    case 'NIEDRIG':
+      return 'priority-low'
+    default:
+      return ''
+  }
+}
+
 onMounted(() => {
   loadAllTickets()
   loadKursTickets()
@@ -162,42 +183,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.filter-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.filter-options {
-  display: flex;
-  gap: 20px;
-}
-
-.filter-search {
-  display: flex;
-  align-items: center;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #f2f2f2;
-}
-
-tr:hover {
-  background-color: #f5f5f5;
-  cursor: pointer;
-}
-</style>
+<style scoped></style>

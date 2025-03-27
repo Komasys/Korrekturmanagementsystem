@@ -14,43 +14,44 @@ def allowed_file(filename):
 
 @ticket_bp.route('/setTicket', methods=['POST'])
 def set_ticket():
-    if 'file' not in request.files:
-        return jsonify({"message": "Keine Datei hochgeladen!"}), 400
+    file = request.files.get('file')
+    filename = None
 
-    file = request.files['file']
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(UPLOAD_FOLDER, filename))
-    else:
-        return jsonify({"message": "Ungültige Datei!"}), 400
+    if file and file.filename != '':
+        if allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+        else:
+            return jsonify({"message": "Ungültige Datei!"}), 400
 
     data = request.form.to_dict()
     if not data:
         return jsonify({"message": "Ungültige Formulardaten!"}), 400
 
     new_ticket = Ticket(
-        beschreibung = data['beschreibung'],
-        kategorie = data['kategorie'],
-        prioritaet = "NIEDRIG",
-        kurs_id = data['kurs_id'],
-        ersteller_id = data['benutzer_id']
+        beschreibung=data['beschreibung'],
+        kategorie=data['kategorie'],
+        prioritaet="NIEDRIG",
+        kurs_id=data['kurs_id'],
+        ersteller_id=data['benutzer_id']
     )
     db.session.add(new_ticket)
     db.session.commit()
 
-    new_anhang = Anhang(
-        ticket_id = new_ticket.id,
-        dateiname = filename if file else None
-    )
-    db.session.add(new_anhang)
-    db.session.commit()
+    if filename:
+        new_anhang = Anhang(
+            ticket_id=new_ticket.id,
+            dateiname=filename
+        )
+        db.session.add(new_anhang)
+        db.session.commit()
 
     new_historie = Historie(
-        ticket_id = new_ticket.id,
-        status = "NEU",
-        beschreibung = "*Ticket erstellt*",
-        bearbeiter_id = data['benutzer_id'],
-        geaendert_am = datetime.utcnow()
+        ticket_id=new_ticket.id,
+        status="NEU",
+        beschreibung="*Ticket erstellt*",
+        bearbeiter_id=data['benutzer_id'],
+        geaendert_am=datetime.utcnow()
     )
     db.session.add(new_historie)
     db.session.commit()

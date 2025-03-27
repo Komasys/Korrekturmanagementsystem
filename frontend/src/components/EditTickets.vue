@@ -14,10 +14,11 @@
     <table>
       <thead>
         <tr>
+          <th class="status_th"></th>
           <th @click="sortTable('id')">
             ID <span>{{ getSortIcon('id') }}</span>
           </th>
-          <th @click="sortTable('beschreibung')">
+          <th class="cell" @click="sortTable('beschreibung')">
             Beschreibung <span>{{ getSortIcon('beschreibung') }}</span>
           </th>
           <th @click="sortTable('kategorie')">
@@ -27,17 +28,18 @@
             Status <span>{{ getSortIcon('status') }}</span>
           </th>
           <th @click="sortTable('erstelldatum')">
-            Erstellt am <span>{{ getSortIcon('erstelldatum') }}</span>
+            Datum <span>{{ getSortIcon('erstelldatum') }}</span>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="ticket in filteredTickets" :key="ticket.id" @click="showDetails(ticket.id)">
-          <td>{{ ticket.id }}</td>
-          <td>{{ ticket.beschreibung }}</td>
-          <td>{{ capitalize(ticket.kategorie) }}</td>
+          <td class="priority-bar" :class="getPriorityClass(ticket.prioritaet)"></td>
+          <td class="cell">{{ ticket.id }}</td>
+          <td class="cell">{{ ticket.beschreibung }}</td>
+          <td class="cell">{{ capitalize(ticket.kategorie) }}</td>
           <td>{{ capitalize(ticket.status) }}</td>
-          <td>{{ new Date(ticket.erstelldatum).toLocaleString() }}</td>
+          <td>{{ new Date(ticket.erstelldatum).toLocaleDateString() }}</td>
         </tr>
       </tbody>
     </table>
@@ -105,37 +107,22 @@ const showDetails = (ticketId) => {
   router.push({ name: 'ticket-details', params: { id: ticketId } })
 }
 
+const getPriorityClass = (priority) => {
+  switch (priority?.toUpperCase()) {
+    case 'HOCH':
+      return 'priority-high'
+    case 'MITTEL':
+      return 'priority-medium'
+    case 'NIEDRIG':
+      return 'priority-low'
+    default:
+      return ''
+  }
+}
+
 onMounted(() => {
   loadBearbeiteteTickets()
 })
 </script>
 
-<style scoped>
-.filter-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
-  background-color: #f2f2f2;
-}
-
-tr:hover {
-  background-color: #f5f5f5;
-  cursor: pointer;
-}
-</style>
+<style scoped></style>
