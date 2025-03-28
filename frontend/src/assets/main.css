@@ -20,28 +20,6 @@ body {
   flex-wrap: wrap;
 }
 
-@media screen and (max-width: 600px) {
-  label {
-    font-size: 14px;
-  }
-
-  .filter-container {
-    display: flex;
-    flex-direction: column;
-    align-content: flex-start;
-    align-items: flex-start;
-  }
-
-  .filter-search {
-    flex-direction: column;
-    margin-bottom: 10px;
-  }
-  .filter-options {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
 .table-responsive {
   overflow-x: auto;
   width: 100%;
@@ -57,6 +35,21 @@ table {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.kategorie-cell {
+  width: 150px;
+  white-space: nowrap;
+}
+
+.status-cell {
+  width: 100px;
+  white-space: nowrap;
+}
+
+.datum-cell {
+  width: 110px;
+  white-space: nowrap;
 }
 
 th,
@@ -94,4 +87,39 @@ tr:hover {
 
 .priority-low {
   background-color: green;
+}
+
+@media screen and (max-width: 600px) {
+  label {
+    font-size: 14px;
+  }
+
+  .filter-container {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .filter-search {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  .filter-options {
+    display: flex;
+    flex-direction: column;
+  }
+  .kategorie-cell,
+  .status-cell,
+  .datum-cell {
+    max-width: 60px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .beschreibung-cell,
+  .id-cell {
+    font-size: 12px;
+  }
 }

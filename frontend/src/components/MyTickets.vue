@@ -14,32 +14,34 @@
     <table>
       <thead>
         <tr>
-          <th class="cell" @click="sortTable('id')">
+          <th class="cell id-cell" @click="sortTable('id')">
             ID <span>{{ getSortIcon('id') }}</span>
           </th>
-          <th class="cell" @click="sortTable('beschreibung')">
+          <th class="cell beschreibung-cell" @click="sortTable('beschreibung')">
             Beschreibung <span>{{ getSortIcon('beschreibung') }}</span>
           </th>
-          <th class="cell" @click="sortTable('kategorie')">
+          <th class="cell kategorie-cell" @click="sortTable('kategorie')">
             Kategorie <span>{{ getSortIcon('kategorie') }}</span>
           </th>
-          <th class="cell" @click="sortTable('status')">
+          <th class="cell status-cell" @click="sortTable('status')">
             Status <span>{{ getSortIcon('status') }}</span>
           </th>
-          <th @click="sortTable('erstelldatum')">
+          <th class="datum-cell" @click="sortTable('erstelldatum')">
             Datum <span>{{ getSortIcon('erstelldatum') }}</span>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="ticket in filteredTickets" :key="ticket.id" @click="showDetails(ticket.id)">
-          <td class="cell">{{ ticket.id }}</td>
-          <td class="cell">{{ ticket.beschreibung }}</td>
-          <td class="cell">
+          <td class="cell id-cell">{{ ticket.id }}</td>
+          <td class="cell beschreibung-cell">{{ ticket.beschreibung }}</td>
+          <td class="cell kategorie-cell">
             {{ ticket.kategorie.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()) }}
           </td>
-          <td class="cell">{{ ticket.status.toUpperCase() }}</td>
-          <td>{{ new Date(ticket.erstelldatum).toLocaleDateString() }}</td>
+          <td class="cell status-cell">
+            {{ ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1) }}
+          </td>
+          <td class="datum-cell">{{ new Date(ticket.erstelldatum).toLocaleDateString() }}</td>
         </tr>
       </tbody>
     </table>
@@ -47,7 +49,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, capitalize } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import API_URL from '@/api'
 import { useUserStore } from '@/stores/user'

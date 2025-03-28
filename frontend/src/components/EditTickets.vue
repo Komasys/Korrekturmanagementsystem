@@ -15,19 +15,19 @@
       <thead>
         <tr>
           <th class="status_th"></th>
-          <th @click="sortTable('id')">
+          <th class="id-cell" @click="sortTable('id')">
             ID <span>{{ getSortIcon('id') }}</span>
           </th>
-          <th class="cell" @click="sortTable('beschreibung')">
+          <th class="cell beschreibung-cell" @click="sortTable('beschreibung')">
             Beschreibung <span>{{ getSortIcon('beschreibung') }}</span>
           </th>
-          <th class="cell" @click="sortTable('kategorie')">
+          <th class="cell kategorie-cell" @click="sortTable('kategorie')">
             Kategorie <span>{{ getSortIcon('kategorie') }}</span>
           </th>
-          <th @click="sortTable('status')">
+          <th class="status-cell" @click="sortTable('status')">
             Status <span>{{ getSortIcon('status') }}</span>
           </th>
-          <th @click="sortTable('erstelldatum')">
+          <th class="datum-cell" @click="sortTable('erstelldatum')">
             Datum <span>{{ getSortIcon('erstelldatum') }}</span>
           </th>
         </tr>
@@ -35,13 +35,15 @@
       <tbody>
         <tr v-for="ticket in filteredTickets" :key="ticket.id" @click="showDetails(ticket.id)">
           <td class="priority-bar" :class="getPriorityClass(ticket.prioritaet)"></td>
-          <td class="cell">{{ ticket.id }}</td>
-          <td class="cell">{{ ticket.beschreibung }}</td>
-          <td class="cell">
+          <td class="cell id-cell">{{ ticket.id }}</td>
+          <td class="cell beschreibung-cell">{{ ticket.beschreibung }}</td>
+          <td class="cell kategorie-cell">
             {{ ticket.kategorie.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()) }}
           </td>
-          <td>{{ capitalize(ticket.status) }}</td>
-          <td>{{ new Date(ticket.erstelldatum).toLocaleDateString() }}</td>
+          <td class="status-cell">
+            {{ ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1) }}
+          </td>
+          <td class="datum-cell">{{ new Date(ticket.erstelldatum).toLocaleDateString() }}</td>
         </tr>
       </tbody>
     </table>
@@ -49,7 +51,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, capitalize, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import API_URL from '@/api'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'

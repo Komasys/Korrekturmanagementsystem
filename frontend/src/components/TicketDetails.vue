@@ -18,7 +18,7 @@
       </ul>
     </div>
     <div v-else>
-      <p>Keine Anhänge vorhanden</p>
+      <p style="color: #999; font-style: italic">Keine Anhänge vorhanden</p>
     </div>
     <button class="btn1" :class="getPriorityClass(ticket.prioritaet)">
       {{ ticket.prioritaet }}
@@ -81,7 +81,7 @@
       </div>
     </div>
     <div v-else>
-      <p>Keine Kommentare vorhanden</p>
+      <p style="color: #999; font-style: italic">Keine Kommentare vorhanden</p>
     </div>
     <form @submit.prevent="submitComment" v-if="canSubmitComment">
       <textarea v-model="newComment" placeholder="Kommentar hinzufügen"></textarea>
@@ -242,11 +242,6 @@ p {
 
 p strong {
   color: #333;
-}
-
-p:last-child {
-  color: #999;
-  font-style: italic;
 }
 
 .comment {
