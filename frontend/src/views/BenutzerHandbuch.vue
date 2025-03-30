@@ -5,135 +5,78 @@
     <section>
       <h2>Einführung</h2>
       <p>
-        Willkommen im Korrekturmanagementsystem! Dieses System unterstützt Sie bei der Verwaltung
-        und Bearbeitung von Tickets zu Kursen und Lernmaterialien.
+        Dieses Handbuch soll den Benutzern eine einfache und verständliche Anleitung zur Nutzung des
+        Korrekturmanagementsystems bereitstellen. Es beschreibt alle notwendigen Schritte, um Fehler
+        oder Verbesserungsvorschläge zu melden und den Bearbeitungsprozess zu verfolgen.
       </p>
-    </section>
-
-    <section>
-      <h2>Rollen und Berechtigungen</h2>
+      <p>
+        <strong>Zielgruppe:</strong> Studierende der IU, die das System zur Meldung von Problemen in
+        ihren Kursen verwenden.
+      </p>
+      <p><strong>Systemanforderungen:</strong></p>
       <ul>
-        <li>
-          <strong>Student:</strong>
-          <ul>
-            <li>Kann eigene Tickets erstellen und einsehen.</li>
-            <li>Kann Kommentare zu eigenen Tickets hinzufügen.</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Tutor & Dozent:</strong>
-          <ul>
-            <li>Können alle Tickets einsehen.</li>
-            <li>Können Tickets kommentieren, Priorität/Status ändern und an QM weiterleiten.</li>
-          </ul>
-        </li>
-        <li>
-          <strong>QM (Prüfungsamt):</strong>
-          <ul>
-            <li>Kann alle Tickets einsehen und bearbeiten.</li>
-            <li>Kann Prioritäten setzen, Status ändern und kommentieren.</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Admin:</strong>
-          <ul>
-            <li>Vollzugriff auf Systemfunktionen und Benutzerrollen.</li>
-          </ul>
-        </li>
+        <li>Aktueller Webbrowser (z.B. Chrome, Firefox, Safari, Edge)</li>
+        <li>Stabile Internetverbindung</li>
+        <li>Gültiges IU-Benutzerkonto</li>
       </ul>
     </section>
 
     <section>
-      <h2>Anmeldung</h2>
-      <ol>
-        <li>Öffnen Sie die Anmeldeseite.</li>
-        <li>Geben Sie Ihre Zugangsdaten ein.</li>
-        <li>Klicken Sie auf <strong>Login</strong>.</li>
-        <li>Sie werden zum Dashboard weitergeleitet.</li>
-      </ol>
-    </section>
-
-    <section>
-      <h2>Dashboard</h2>
-      <p>Ihre zentrale Übersicht. Funktionen variieren je nach Rolle:</p>
+      <h2>Erste Schritte</h2>
+      <h3>Anmeldung und Benutzerrollen</h3>
       <ul>
-        <li><strong>Ticket erstellen</strong> (nur für Student, Dozent, Tutor, Admin)</li>
-        <li><strong>Meine Tickets</strong> (nur für Student, Dozent, Tutor, Admin)</li>
-        <li><strong>Bearbeitete Tickets</strong> (nur für Tutor, Dozent, QM, Admin)</li>
-        <li><strong>Alle Tickets</strong> (nur für Tutor, Dozent, QM, Admin)</li>
+        <li><strong>Student:</strong> Eigene Tickets erstellen, einsehen, kommentieren</li>
+        <li>
+          <strong>Tutor & Dozent:</strong> Alle Tickets einsehen, kommentieren, Priorität/Status
+          ändern, an QM weiterleiten
+        </li>
+        <li><strong>QM:</strong> Tickets einsehen/bearbeiten, Prioritäten setzen, kommentieren</li>
+        <li><strong>Admin:</strong> Vollzugriff auf Systemfunktionen und Rollen</li>
       </ul>
+
+      <h3>Überblick über die Benutzeroberfläche</h3>
+      <ul>
+        <li><strong>Ticket erstellen:</strong> Neues Ticket erfassen</li>
+        <li><strong>Meine Tickets:</strong> Startseite nach Login, Übersicht & Bearbeitung</li>
+        <li><strong>Logout:</strong> Abmeldung vom System</li>
+        <li><strong>Hilfe:</strong> Unten links per <strong>?</strong>-Symbol erreichbar</li>
+      </ul>
+
+      <h3>Navigation im System</h3>
+      <p>Die Navigation erfolgt über die Menüleiste am oberen Rand.</p>
     </section>
 
     <section>
-      <h2>Ticket erstellen</h2>
+      <h2>Meldungen erstellen und verwalten</h2>
+      <h3>Fehler oder Verbesserungsvorschläge melden</h3>
       <ol>
-        <li>Klicken Sie auf <strong>Ticket erstellen</strong>.</li>
+        <li>In der Menüleiste auf <strong>Ticket erstellen</strong> klicken</li>
         <li>
-          Füllen Sie das Formular aus:
+          Formular ausfüllen:
           <ul>
-            <li>Kategorie (z.B. Tippfehler)</li>
+            <li>Kategorie (z.B. Tippfehler, inhaltlicher Fehler)</li>
             <li>Kurs</li>
-            <li>Lernmaterial (optional)</li>
+            <li>Lernmaterial</li>
             <li>Beschreibung</li>
-            <li>Datei-Upload (optional, max. 2 MB)</li>
+            <li>Upload (z.B. Screenshots, max. 2 MB)</li>
           </ul>
         </li>
-        <li>Absenden nicht vergessen!</li>
       </ol>
-    </section>
 
-    <section>
-      <h2>Tickets verwalten</h2>
-      <h3>Meine Tickets</h3>
-      <ul>
-        <li>Liste eigener Tickets mit Statusanzeige.</li>
-      </ul>
-      <h3>Bearbeitete Tickets</h3>
-      <ul>
-        <li>Nur für Bearbeiter sichtbar, inklusive Verlauf & Kommentare.</li>
-      </ul>
-      <h3>Alle Tickets</h3>
-      <ul>
-        <li>Nur für berechtigte Rollen.</li>
-        <li>Filter- & Sortierfunktionen verfügbar.</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Ticket bearbeiten</h2>
+      <h3>Meldungen bearbeiten und ergänzen</h3>
       <ol>
-        <li>Ticket öffnen.</li>
-        <li>
-          Aktionen je nach Rolle:
-          <ul>
-            <li>Status ändern</li>
-            <li>Priorität setzen</li>
-            <li>Interne Beschreibung hinzufügen</li>
-          </ul>
-        </li>
-        <li>Speichern nicht vergessen.</li>
+        <li>In der Menüleiste auf <strong>Meine Tickets</strong> klicken</li>
+        <li>Ticket auswählen und öffnen</li>
+        <li>Kommentare hinzufügen</li>
       </ol>
     </section>
 
     <section>
-      <h2>Kommentare hinzufügen</h2>
+      <h2>Bearbeitungsprozess und Statusverfolgung</h2>
       <ol>
         <li>Ticket öffnen</li>
-        <li>Zum Bereich <strong>Rückfragen an Ticketersteller</strong> scrollen</li>
-        <li>Kommentar schreiben und hinzufügen</li>
-      </ol>
-    </section>
-
-    <section>
-      <h2>Benutzerhandbuch anzeigen</h2>
-      <p>Jederzeit über das <strong>?</strong>-Symbol unten links erreichbar.</p>
-    </section>
-
-    <section>
-      <h2>Abmeldung</h2>
-      <ol>
-        <li>Im Dashboard auf <strong>Logout</strong> klicken</li>
-        <li>Sie werden abgemeldet</li>
+        <li>Details wie Priorität und Status einsehen</li>
+        <li>Historie und Kommentare im Ticketverlauf prüfen</li>
       </ol>
     </section>
 
@@ -141,29 +84,26 @@
       <h2>Häufig gestellte Fragen (FAQ)</h2>
       <ul>
         <li>
-          <strong>Wie kann ich mein Passwort zurücksetzen?</strong><br />Wenden Sie sich an den
-          Administrator.
+          <strong>Fehlermeldung bei Anmeldung?</strong><br />Zugangsdaten und Internetverbindung
+          prüfen.
         </li>
+        <li><strong>Passwort vergessen?</strong><br />Wenden Sie sich an den Administrator.</li>
+        <li><strong>Kein Ticket erstellen möglich?</strong><br />Pflichtfelder überprüfen.</li>
         <li>
-          <strong>Wie kann ich meine Rolle ändern?</strong><br />Nur Administratoren können Rollen
-          ändern.
+          <strong>Wie kommentiere ich ein Ticket?</strong><br />Ticket öffnen, Kommentar unter
+          „Rückfragen an Ticketersteller“ einfügen.
         </li>
-        <li>
-          <strong>Wie kann ich ein Ticket kommentieren?</strong><br />Im Ticket unter
-          <em>Rückfragen an Ticketersteller</em> kommentieren.
-        </li>
+        <li><strong>Rolle ändern?</strong><br />Nur Admins können Rollen ändern.</li>
       </ul>
     </section>
 
     <section>
       <h2>Support</h2>
-      <p>Bei Fragen oder Problemen wenden Sie sich bitte an den Administrator.</p>
+      <p>Bei technischen Problemen wenden Sie sich bitte an das Projektteam.</p>
     </section>
 
     <div class="footer">
-      <p>
-        <em>Dieses Handbuch soll Ihnen helfen, das System effektiv zu nutzen. Viel Erfolg!</em>
-      </p>
+      <p><em>Dieses Handbuch soll Ihnen helfen, das System effektiv zu nutzen. Viel Erfolg!</em></p>
     </div>
   </div>
 </template>
