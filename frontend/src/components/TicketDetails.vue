@@ -124,7 +124,6 @@ const loadTicketDetails = async () => {
   if (response.ok) {
     const data = await response.json()
     ticket.value = data
-    console.log(data)
     new_status.value = data.status.toUpperCase()
     new_prioritaet.value = data.prioritaet.toUpperCase()
   } else {

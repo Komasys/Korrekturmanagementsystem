@@ -51,7 +51,11 @@
             </td>
             <td class="datum-cell">
               <time :datetime="ticket.erstelldatum">{{
-                new Date(ticket.erstelldatum).toLocaleDateString()
+                new Date(ticket.erstelldatum).toLocaleDateString('de-DE', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                })
               }}</time>
             </td>
           </tr>
