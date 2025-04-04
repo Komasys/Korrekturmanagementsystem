@@ -10,7 +10,7 @@ lerna-debug.log*
 logs/
 *.log
 *.log.*
-
+/backend/login_logs.txt
 # Dependency directories
 jspm_packages/
 bower_components/

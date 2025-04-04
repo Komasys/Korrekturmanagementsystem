@@ -1,6 +1,16 @@
 from flask import Blueprint, request, jsonify
 from models import db, Benutzer, Rolle
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from datetime import datetime, timezone
+import logging
+
+# Configure logging
+logging.basicConfig(
+    filename='login_logs.txt',  # Logdatei
+    level=logging.INFO,
+    format='%(asctime)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 auth_bp = Blueprint('auth_bp', __name__)
 
@@ -13,6 +23,12 @@ def login():
     user = Benutzer.query.filter_by(email=data['email']).first()
     if not user or not user.check_password(data['password']):
         return jsonify({"message":"Ungültige Anmeldedaten!"}), 401
+
+    user.letzte_anmeldung = datetime.now(timezone.utc)
+    db.session.commit()
+
+    # Log the login
+    logging.info(f"Benutzer-ID: {user.id}, Email: {user.email}, IP: {request.remote_addr}")
 
     access_token = create_access_token(identity=user.id)
     return jsonify(access_token=access_token), 200

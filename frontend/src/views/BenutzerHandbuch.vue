@@ -129,6 +129,26 @@ h3 {
 h1 {
   text-align: center;
   margin-bottom: 2rem;
+  font-size: 2.5rem; /* Standardgröße */
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem; /* Kleinere Schriftgröße für Tablets und kleinere Bildschirme */
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.25rem; /* Noch kleinere Schriftgröße für Smartphones */
+    margin-bottom: 1rem;
+  }
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 section {

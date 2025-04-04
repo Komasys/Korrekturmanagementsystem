@@ -67,7 +67,7 @@ p {
 }
 
 .role {
-  padding: 10px;
+  padding: 5px;
   background-color: #f0f0f0;
   text-align: center;
   position: fixed;

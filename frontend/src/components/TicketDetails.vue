@@ -74,7 +74,7 @@
     <div v-if="ticket.kommentare && ticket.kommentare.length > 0">
       <div v-for="kommentar in ticket.kommentare" :key="kommentar.id" class="comment">
         <p>
-          <strong>{{ kommentar.benutzer_name }}</strong> am
+          <strong>{{ capitalize(kommentar.benutzer_name) }}</strong> am
           {{ new Date(kommentar.erstelldatum).toLocaleString() }}
         </p>
         <p>{{ kommentar.nachricht }}</p>
